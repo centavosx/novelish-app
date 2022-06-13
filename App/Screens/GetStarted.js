@@ -23,7 +23,12 @@ import {
 import { styles } from '../../styles'
 const GetStarted = ({ navigation }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'stretch',
+      }}
+    >
       <ImageBackground source={background} style={styles.bgimage}>
         <View style={styles.imageContainer}>
           <Image source={logo} style={styles.logo} />

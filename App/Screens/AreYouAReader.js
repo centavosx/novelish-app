@@ -16,7 +16,12 @@ const AreYouAReader = ({ navigation }) => {
     return navigation.navigate('Login')
   }
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'stretch',
+      }}
+    >
       <ImageBackground source={background} style={styles.bgimage}>
         <View style={{ marginHorizontal: '20%', marginBottom: 50 }}>
           <Text

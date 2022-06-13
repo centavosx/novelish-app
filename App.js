@@ -13,6 +13,9 @@ export default function App() {
   const [loaded] = useFonts({
     'Gorditas-Regular': require('./assets/fonts/Gorditas-Regular.ttf'),
     'Gorditas-Bold': require('./assets/fonts/Gorditas-Bold.ttf'),
+    GenBasB: require('./assets/fonts/GenBasB.ttf'),
+    GenBasI: require('./assets/fonts/GenBasI.ttf'),
+    GenBasR: require('./assets/fonts/GenBasR.ttf'),
   })
 
   if (!loaded) {

@@ -12,7 +12,12 @@ import { styles } from '../../styles'
 
 const GetNotified = ({ navigation }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'stretch',
+      }}
+    >
       <ImageBackground source={background} style={styles.bgimage}>
         <Image source={notified} style={styles.logo} />
         {/* <View style={styles.imageContainer}>

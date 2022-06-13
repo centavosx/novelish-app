@@ -52,13 +52,29 @@ export const styles = StyleSheet.create({
   buttonTxt: {
     fontSize: 18,
     color: 'white',
-    fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'GenBasB',
   },
   bgimage: {
     flex: 1,
     resizeMode: 'stretch',
     justifyContent: 'center',
+  },
+  txtInput: {
+    backgroundColor: '#ABAFBA',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  loginButton: {
+    backgroundColor: '#EC7A99',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    marginTop: 10,
   },
   title: {
     fontSize: 28,
@@ -72,5 +88,11 @@ export const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textShadowRadius: 5,
     fontWeight: 'bold',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
   },
 })
