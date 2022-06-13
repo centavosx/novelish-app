@@ -2,9 +2,10 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import LoginScreen from './App/Screens/Login'
+import GetStartedScreen from './App/Screens/GetStarted'
 import GetNotifiedScreen from './App/Screens/GetNotified'
 import AreYouAReaderScreen from './App/Screens/AreYouAReader'
+import LoginScreen from './App/Screens/Login'
 import { useFonts } from 'expo-font'
 
 const NavigationStack = createNativeStackNavigator()
@@ -20,8 +21,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <NavigationStack.Navigator>
-        <NavigationStack.Screen name="Login" options={{ headerShown: false }}>
-          {(props) => <LoginScreen {...props} />}
+        <NavigationStack.Screen
+          name="GetStarted"
+          options={{ headerShown: false }}
+        >
+          {(props) => <GetStartedScreen {...props} />}
         </NavigationStack.Screen>
         <NavigationStack.Screen
           name="GetNotified"
@@ -34,6 +38,9 @@ export default function App() {
           options={{ headerShown: false }}
         >
           {(props) => <AreYouAReaderScreen {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen name="Login" options={{ headerShown: false }}>
+          {(props) => <LoginScreen {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>

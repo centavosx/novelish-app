@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const AreYouAReader = ({ navigation }) => {
   const setReader = async (reader) => {
     await AsyncStorage.setItem('reader?', reader.toString())
-    return navigation.navigate('')
+    return navigation.navigate('Login')
   }
   return (
     <View style={styles.container}>

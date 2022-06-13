@@ -6,61 +6,19 @@ import {
   Text,
   Image,
 } from 'react-native'
-
-import {
-  background,
-  logo,
-  N,
-  O,
-  V,
-  E,
-  L,
-  I,
-  S,
-  T,
-  gradient,
-} from '../../images'
+import { topDesign } from '../../images'
 import { styles } from '../../styles'
-const Login = ({ navigation }) => {
+import AsyncStorage from '@react-native-async-storage/async-storage'
+const Login = () => {
   return (
-    <View style={styles.container}>
-      <ImageBackground source={background} style={styles.bgimage}>
-        <View style={styles.imageContainer}>
-          <Image source={logo} style={styles.logo} />
-        </View>
-        <View style={styles.titleAndDetails}>
-          <View style={styles.novelistContainer}>
-            <Image source={N} style={styles.imgCharacterNovel} />
-            <Image source={O} style={styles.imgCharacterNovel} />
-            <Image source={V} style={styles.imgCharacterNovel} />
-            <Image source={E} style={styles.imgCharacterNovel} />
-            <Image source={L} style={styles.imgCharacterNovel} />
-            <Image source={I} style={styles.imgCharacterNovel} />
-            <Image source={S} style={styles.imgCharacterNovel} />
-            <Image source={T} style={styles.imgCharacterNovel} />
-          </View>
-          <Text style={{ color: 'white' }}>
-            Read, create and discover stories around the
-          </Text>
-          <Text style={{ color: 'white' }}>world.</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('GetNotified')}
-          >
-            <ImageBackground
-              source={gradient}
-              style={{
-                width: 180,
-                height: 48.5,
-                paddingHorizontal: 32,
-                paddingVertical: 12,
-              }}
-            >
-              <Text style={styles.buttonTxt}>GET STARTED</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+    <View style={{ ...styles.container, backgroundColor: '#D6DBE8' }}>
+      <Image
+        source={topDesign}
+        style={{ height: '50%', width: '100%', position: 'absolute' }}
+      />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Sign In s</Text>
+      </View>
     </View>
   )
 }
