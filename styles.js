@@ -68,6 +68,20 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
+  cardGenres: {
+    backgroundColor: 'white',
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    paddingVertical: 8,
+    margin: 5,
+  },
+  textGenres: {
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#FC5180',
+  },
   loginButton: {
     backgroundColor: '#EC7A99',
     borderRadius: 10,

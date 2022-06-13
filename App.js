@@ -7,7 +7,7 @@ import GetNotifiedScreen from './App/Screens/GetNotified'
 import AreYouAReaderScreen from './App/Screens/AreYouAReader'
 import LoginScreen from './App/Screens/Login'
 import { useFonts } from 'expo-font'
-
+import Main from './App/BottomTabs/Main'
 const NavigationStack = createNativeStackNavigator()
 export default function App() {
   const [loaded] = useFonts({
@@ -24,6 +24,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <NavigationStack.Navigator>
+        <NavigationStack.Screen name="Main" options={{ headerShown: false }}>
+          {(props) => <Main {...props} />}
+        </NavigationStack.Screen>
         <NavigationStack.Screen
           name="GetStarted"
           options={{ headerShown: false }}
