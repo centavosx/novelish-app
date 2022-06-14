@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { Dimensions } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -68,6 +69,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FC2862',
+    marginLeft: 5,
+  },
   cardGenres: {
     backgroundColor: 'white',
     paddingHorizontal: 14,
@@ -110,3 +117,5 @@ export const styles = StyleSheet.create({
     padding: 15,
   },
 })
+export const windowWidth = Dimensions.get('window').width
+export const windowHeight = Dimensions.get('window').height
