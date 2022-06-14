@@ -6,6 +6,7 @@ import GetStartedScreen from './App/Screens/GetStarted'
 import GetNotifiedScreen from './App/Screens/GetNotified'
 import AreYouAReaderScreen from './App/Screens/AreYouAReader'
 import LoginScreen from './App/Screens/Login'
+import SignUpScreen from './App/Screens/SignUp'
 import { useFonts } from 'expo-font'
 import Main from './App/BottomTabs/Main'
 const NavigationStack = createNativeStackNavigator()
@@ -47,6 +48,9 @@ export default function App() {
         </NavigationStack.Screen>
         <NavigationStack.Screen name="Login" options={{ headerShown: false }}>
           {(props) => <LoginScreen {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen name="SignUp" options={{ headerShown: false }}>
+          {(props) => <SignUpScreen {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>

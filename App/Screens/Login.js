@@ -14,7 +14,7 @@ import Zocial from 'react-native-vector-icons/Zocial'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { Checkbox } from '../Components/ButtonComponents'
 import { Hr } from '../Components/LineComponent'
-const Login = () => {
+const Login = ({ navigation }) => {
   return (
     <View style={{ ...styles.container, backgroundColor: '#D6DBE8', flex: 1 }}>
       <Image
@@ -216,6 +216,16 @@ const Login = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+          </View>
+          <View style={{ flexDirection: 'row', alignContent: "center", flex: 1, width: "90%"}}>
+            <View style={{ flex: 1, height: 1, marginTop: 20 }}>
+              <Text style={{ textAlign: 'center' }}>Don't have an account yet? 
+              <TouchableOpacity style={{marginLeft: 5}} onPress={() => navigation.navigate('SignUp')}>
+              <Text style={{ color: "blue" }}>Create an account </Text>
+              </TouchableOpacity>
+              </Text>
+            </View>
+            
           </View>
         </View>
       </View>
