@@ -112,8 +112,7 @@ const Login = ({ navigation }) => {
               style={{
                 padding: 10,
                 flexDirection: 'row',
-                paddingVertical: 20,
-                flex: 1,
+                paddingTop: 20,
               }}
             >
               <Checkbox onPress={(v) => console.log(v)} />
@@ -217,15 +216,30 @@ const Login = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignContent: "center", flex: 1, width: "90%"}}>
-            <View style={{ flex: 1, height: 1, marginTop: 20 }}>
-              <Text style={{ textAlign: 'center' }}>Don't have an account yet? 
-              <TouchableOpacity style={{marginLeft: 5}} onPress={() => navigation.navigate('SignUp')}>
-              <Text style={{ color: "blue" }}>Create an account </Text>
-              </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              width: '100%',
+            }}
+          >
+            <View
+              style={{
+                marginTop: 20,
+                flexDirection: 'row',
+                alignContent: 'center',
+              }}
+            >
+              <Text style={{ textAlign: 'center' }}>
+                Don't have an account yet?
               </Text>
+              <TouchableOpacity
+                style={{ marginLeft: 5 }}
+                onPress={() => navigation.navigate('SignUp')}
+              >
+                <Text style={{ color: 'blue' }}>Create an account </Text>
+              </TouchableOpacity>
             </View>
-            
           </View>
         </View>
       </View>

@@ -1,4 +1,3 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import {
   TouchableOpacity,
   View,
@@ -9,45 +8,33 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-// import Swiper from 'react-native-swiper'
-import Header from './Header'
+//
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Header from '../Header'
 import {
-  topDesign,
-  shadow,
   main,
   sample,
+  sample1,
+  sample2,
+  sample3,
+  sample4,
+  sample5,
   fire,
-  I,
+  jenny,
   whiteShadow,
-} from '../../images'
-import { styles, windowWidth, windowHeight } from '../../styles'
+} from '../../../images'
+import { styles, windowWidth, windowHeight } from '../../../styles'
+import { HrCommon } from '../../Components/LineComponent'
+import { MainButton } from '../../Components/ButtonComponents'
 import { useState } from 'react'
-import React from 'react'
-
-const HomePage = createNativeStackNavigator()
-const HomeTab = ({ navigation }) => {
-  React.useEffect(() => {
-    navigation.navigate('Home')
-    console.log(windowWidth, windowHeight)
-  }, [])
-  return (
-    <View style={{ flex: 1 }}>
-      <Header />
-      <SelectTab tabItems={['Home', 'Ranking']} />
-      <HomePage.Navigator>
-        <HomePage.Screen name="Home" options={{ headerShown: false }}>
-          {(props) => <Home {...props} />}
-        </HomePage.Screen>
-      </HomePage.Navigator>
-    </View>
-  )
-}
-
 const Home = ({ navigation }) => {
   return (
     <ImageBackground source={main} style={styles.bgimage}>
       <ScrollView>
-        <Image source={sample} style={{ height: 180, width: '100%' }} />
+        <Swiper height={'100%'}>
+          <Image source={sample2} style={{ height: 180, width: '100%' }} />
+          <Image source={sample3} style={{ height: 180, width: '100%' }} />
+        </Swiper>
         <View style={{ paddingHorizontal: 10 }}>
           <BgCard>
             <View
@@ -105,7 +92,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample2}
                   style={{
                     height: windowWidth > 300 ? 126.09 : 226.09,
                     width: windowWidth > 300 ? 100 : 200,
@@ -116,7 +103,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample3}
                   style={{
                     height: windowWidth > 300 ? 126.09 : 226.09,
                     width: windowWidth > 300 ? 100 : 200,
@@ -127,7 +114,29 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample1}
+                  style={{
+                    height: windowWidth > 300 ? 126.09 : 226.09,
+                    width: windowWidth > 300 ? 100 : 200,
+                    borderRadius: 10,
+                    margin: 3,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image
+                  source={sample5}
+                  style={{
+                    height: windowWidth > 300 ? 126.09 : 226.09,
+                    width: windowWidth > 300 ? 100 : 200,
+                    borderRadius: 10,
+                    margin: 3,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image
+                  source={sample4}
                   style={{
                     height: windowWidth > 300 ? 126.09 : 226.09,
                     width: windowWidth > 300 ? 100 : 200,
@@ -143,12 +152,7 @@ const Home = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.cardTitle}>Weekly Featured</Text>
           </View>
-          {/* <Swiper
-            height={'100%'}
-            autoplay
-            activeDotColor="red"
-            dotColor="#2aece3"
-          >
+          <Swiper height={'100%'} autoplay>
             <View style={{ width: '100%' }}>
               <Image
                 style={{
@@ -158,12 +162,67 @@ const Home = ({ navigation }) => {
                   marginVertical: 8,
                 }}
                 resizeMode="cover"
-                source={sample}
+                source={sample4}
+              />
+              <View style={{ flexDirection: 'row' }}>
+                <Text
+                  style={{ fontWeight: 'bold', fontSize: 23, marginBottom: 3 }}
+                >
+                  {'Lost Star '}
+                  <AntDesign
+                    name="heart"
+                    color={'red'}
+                    size={13}
+                    style={{ marginLeft: 10 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 'normal',
+                      marginLeft: 5,
+                    }}
+                  >
+                    {' 8.4 '}
+                  </Text>
+                </Text>
+              </View>
+
+              <Text>
+                As a successful social media journalist with half a million
+                followers, seventeen-year-old Cal is used to sharing his life
+                online. But . . .
+              </Text>
+            </View>
+            <View style={{ width: '100%' }}>
+              <Image
+                style={{
+                  width: windowWidth - 30,
+                  height: 182,
+                  borderRadius: 10,
+                  marginVertical: 8,
+                }}
+                resizeMode="cover"
+                source={sample3}
               />
               <Text
                 style={{ fontWeight: 'bold', fontSize: 23, marginBottom: 3 }}
               >
-                Tower Of God
+                {'Lost Star '}
+                <AntDesign
+                  name="heart"
+                  color={'red'}
+                  size={13}
+                  style={{ marginLeft: 10 }}
+                />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 'normal',
+                    marginLeft: 5,
+                  }}
+                >
+                  {' 8.4 '}
+                </Text>
               </Text>
               <Text>
                 As a successful social media journalist with half a million
@@ -171,7 +230,7 @@ const Home = ({ navigation }) => {
                 online. But . . .
               </Text>
             </View>
-          </Swiper> */}
+          </Swiper>
         </BgCard>
         <View style={{ paddingLeft: 10 }}>
           <BgCard noRadiusRight={true} noPaddingRight={true}>
@@ -181,7 +240,7 @@ const Home = ({ navigation }) => {
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample1}
                   style={{
                     height: 143,
                     width: 111,
@@ -203,7 +262,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample3}
                   style={{
                     height: 143,
                     width: 111,
@@ -214,7 +273,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample2}
                   style={{
                     height: 143,
                     width: 111,
@@ -225,7 +284,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample1}
                   style={{
                     height: 143,
                     width: 111,
@@ -237,7 +296,7 @@ const Home = ({ navigation }) => {
 
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample4}
                   style={{
                     height: 143,
                     width: 111,
@@ -248,7 +307,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample2}
                   style={{
                     height: 143,
                     width: 111,
@@ -277,7 +336,29 @@ const Home = ({ navigation }) => {
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample2}
+                  style={{
+                    height: 143,
+                    width: 111,
+                    borderRadius: 10,
+                    margin: 3,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image
+                  source={sample1}
+                  style={{
+                    height: 143,
+                    width: 111,
+                    borderRadius: 10,
+                    margin: 3,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image
+                  source={sample4}
                   style={{
                     height: 143,
                     width: 111,
@@ -299,29 +380,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample}
+                  source={sample5}
                   style={{
                     height: 143,
                     width: 111,
@@ -333,7 +392,7 @@ const Home = ({ navigation }) => {
 
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample2}
                   style={{
                     height: 143,
                     width: 111,
@@ -344,7 +403,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample1}
                   style={{
                     height: 143,
                     width: 111,
@@ -355,7 +414,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity>
                 <Image
-                  source={sample}
+                  source={sample1}
                   style={{
                     height: 143,
                     width: 111,
@@ -369,7 +428,7 @@ const Home = ({ navigation }) => {
         </View>
         <View style={{ height: 400, width: '100%', marginVertical: 10 }}>
           <Image
-            source={sample}
+            source={sample2}
             style={{ height: '100%', width: '100%', position: 'absolute' }}
           />
           <Image
@@ -380,14 +439,12 @@ const Home = ({ navigation }) => {
             style={{
               bottom: 1,
               position: 'absolute',
-
-              // backgroundColor: 'white',
               width: '100%',
             }}
           >
             <View style={{ height: '100%', padding: 15 }}>
               <Image
-                source={sample}
+                source={sample2}
                 style={{
                   width: 120,
                   height: 200,
@@ -396,12 +453,14 @@ const Home = ({ navigation }) => {
                 }}
               />
 
-              <Text style={{ fontSize: 20 }}>True Beauty</Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                MARRIED TO MY BILLIONAIRE BROTHER-IN-LAW
+              </Text>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ marginRight: 10 }}>Romance</Text>
                 <View
                   style={{
-                    borderRadius: '100%',
+                    borderRadius: 10,
                     width: 5,
                     height: 5,
                     backgroundColor: 'grey',
@@ -412,7 +471,7 @@ const Home = ({ navigation }) => {
                 <Text style={{ marginRight: 10 }}>Love</Text>
                 <View
                   style={{
-                    borderRadius: '100%',
+                    borderRadius: 10,
                     width: 5,
                     height: 5,
                     backgroundColor: 'grey',
@@ -421,11 +480,143 @@ const Home = ({ navigation }) => {
                   }}
                 ></View>
                 <Text style={{ marginRight: 10 }}>2020</Text>
-                <Text style={{ flex: 1, textAlign: 'right' }}>8.4</Text>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <AntDesign
+                      name="heart"
+                      color={'red'}
+                      style={{ margin: 3 }}
+                    />
+                    <Text>8.4</Text>
+                  </View>
+                </View>
               </View>
-              <Text>True Beauty</Text>
+              <Text style={{ fontSize: 12 }}>
+                As a successful social media journalist with half a million
+                followers, seventeen-year-old Cal is used to sharing his life
+                online. But . . .
+              </Text>
             </View>
           </View>
+        </View>
+        <View style={{ paddingHorizontal: 10 }}>
+          <BgCard>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={fire} style={{ width: 18, height: 29.36 }} />
+              <Text style={styles.cardTitle}>Popular Authors</Text>
+            </View>
+            <View
+              style={{
+                flexWrap: 'wrap',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                paddingVertical: 10,
+              }}
+            >
+              {[1, 2, 3, 4, 5].map(() => (
+                <TouchableOpacity style={styles.authorIcon}>
+                  <Image source={jenny} style={styles.authorIconImage} />
+                  <Text style={styles.authorIconText}>Jenny</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </BgCard>
+        </View>
+        <HrCommon style={{ marginVertical: 10, backgroundColor: 'white' }} />
+        <View style={{ padding: 10 }}>
+          <Text style={styles.cardTitle}>Editor's Pick</Text>
+          <ScrollView style={{ flexDirection: 'row' }} horizontal={true}>
+            <View style={[styles.cardGenres, { borderRadius: 20 }]}>
+              <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                <Image
+                  source={sample3}
+                  style={{
+                    height: 137,
+                    width: 81,
+                    borderRadius: 20,
+                    marginRight: 10,
+                  }}
+                />
+                <View>
+                  <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
+                    The Ninth Time
+                  </Text>
+                  <Text
+                    style={[
+                      styles.textGenres,
+                      { color: 'black', textAlign: 'left' },
+                    ]}
+                  >
+                    Sci Fi
+                  </Text>
+                  <Text style={{ width: 200, fontSize: 11 }}>
+                    Patrick “Pack” Walsh may not know exactly where he’s going
+                    in life, but he’s happy where he is. He’s got a girlfriend
+                    who gets him. His single dad is his . . .
+                  </Text>
+                  <MainButton
+                    text={'Start Reading'}
+                    buttonStyle={{
+                      width: 115,
+                      height: 40,
+                      borderRadius: 20,
+                      marginTop: 5,
+                    }}
+                    imageStyle={{
+                      width: '100%',
+                      height: '100%',
+
+                      paddingVertical: 3,
+                      paddingTop: 6,
+                    }}
+                    txtStyle={{ fontSize: 14 }}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={[styles.cardGenres, { borderRadius: 20 }]}>
+              <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                <Image
+                  source={sample2}
+                  style={{
+                    height: 137,
+                    width: 81,
+                    borderRadius: 20,
+                    marginRight: 10,
+                  }}
+                />
+                <View>
+                  <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
+                    The Ninth Time
+                  </Text>
+                  <Text
+                    style={[
+                      styles.textGenres,
+                      { color: 'black', textAlign: 'left' },
+                    ]}
+                  >
+                    Sci Fi
+                  </Text>
+                  <Text style={{ width: 200, fontSize: 11 }}>
+                    Patrick “Pack” Walsh may not know exactly where he’s going
+                    in life, but he’s happy where he is. He’s got a girlfriend
+                    who gets him. His single dad is his . . .
+                  </Text>
+                  <MainButton
+                    text={'Start Reading'}
+                    buttonStyle={{
+                      width: 115,
+                      height: 40,
+                      padding: 1,
+                      borderRadius: 100,
+                      borderWidth: 1,
+                    }}
+                    txtStyle={{ fontSize: 14 }}
+                  />
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </ScrollView>
     </ImageBackground>
@@ -463,43 +654,4 @@ const BgCard = ({
   )
 }
 
-const SelectTab = ({ tabItems, selectItem = null }) => {
-  const [select, setSelect] = useState(0)
-  React.useEffect(() => {
-    if (selectItem) setSelect(selectItem)
-  }, [selectItem])
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        borderTopWidth: 0.2,
-        borderTopColor: 'black',
-        backgroundColor: 'white',
-      }}
-    >
-      {tabItems.map((d, i) => (
-        <TouchableOpacity
-          key={d}
-          style={{
-            borderBottomWidth: 3,
-            borderBottomColor: select === i ? '#E74974' : 'transparent',
-            paddingVertical: 8,
-            paddingHorizontal: 12,
-          }}
-          onPress={() => setSelect(i)}
-        >
-          <Text
-            style={{
-              color: select === i ? '#E74974' : 'black',
-              fontWeight: 'bold',
-            }}
-          >
-            {d}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  )
-}
-
-export default HomeTab
+export default Home

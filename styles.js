@@ -116,6 +116,31 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
   },
+  authorIconText: {
+    backgroundColor: '#FC5180',
+    textAlign: 'center',
+    top: -10,
+    width: '100%',
+    paddingBottom: 3,
+    paddingTop: 1.5,
+    paddingHorizontal: 3,
+    bottom: 1,
+    color: 'white',
+    borderRadius: 3,
+    fontSize: 10,
+  },
+  authorIcon: {
+    margin: 5,
+    marginVertical: 5,
+    width: 54,
+  },
+  authorIconImage: {
+    height: 54,
+    width: 54,
+    borderRadius: 100,
+    borderColor: '#FC5180',
+    borderWidth: 2,
+  },
 })
 export const windowWidth = Dimensions.get('window').width
 export const windowHeight = Dimensions.get('window').height

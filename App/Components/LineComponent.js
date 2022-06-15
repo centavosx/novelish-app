@@ -12,3 +12,11 @@ import {
 export const Hr = ({ style }) => {
   return <View style={{ ...style, borderRadius: 10 }}></View>
 }
+
+export const HrCommon = ({ style }) => {
+  return (
+    <View
+      style={{ width: '100%', height: 0.4, backgroundColor: 'grey', ...style }}
+    />
+  )
+}
