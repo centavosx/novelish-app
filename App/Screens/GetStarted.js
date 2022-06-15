@@ -18,6 +18,7 @@ import {
   I,
   S,
   T,
+  novelish,
   gradient,
 } from '../../images'
 import { styles } from '../../styles'
@@ -35,14 +36,14 @@ const GetStarted = ({ navigation }) => {
         </View>
         <View style={styles.titleAndDetails}>
           <View style={styles.novelistContainer}>
-            <Image source={N} style={styles.imgCharacterNovel} />
-            <Image source={O} style={styles.imgCharacterNovel} />
+            <Image source={novelish} style={{ width: 216, height: 40 }} />
+            {/* <Image source={O} style={styles.imgCharacterNovel} />
             <Image source={V} style={styles.imgCharacterNovel} />
             <Image source={E} style={styles.imgCharacterNovel} />
             <Image source={L} style={styles.imgCharacterNovel} />
             <Image source={I} style={styles.imgCharacterNovel} />
             <Image source={S} style={styles.imgCharacterNovel} />
-            <Image source={T} style={styles.imgCharacterNovel} />
+            <Image source={T} style={styles.imgCharacterNovel} /> */}
           </View>
           <Text style={{ color: 'white' }}>
             Read, create and discover stories around the

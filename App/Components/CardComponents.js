@@ -9,6 +9,12 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-export const CardMain = ({ children }) => (
-  <View style={styles.cardGenres}>{children}</View>
+export const CardMain = ({ children, style, touchable, onPress }) => (
+  <TouchableOpacity
+    style={[styles.cardGenres, style]}
+    disabled={!touchable}
+    onPress={() => (onPress ? onPress() : null)}
+  >
+    {children}
+  </TouchableOpacity>
 )

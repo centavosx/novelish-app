@@ -8,9 +8,12 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-import React, { useState } from 'react'
+import { styles, windowWidth, windowHeight } from '../../styles'
+import React, { useRef, useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { topDesign, logo, mainLogo } from '../../images'
+import { Children } from 'react/cjs/react.production.min'
+
 const Header = ({ logo }) => {
   return (
     <View
@@ -50,48 +53,78 @@ const Header = ({ logo }) => {
   )
 }
 export const SelectTab = ({
-  tabItems = [null],
+  tabItems = [],
   selectItem = null,
   getValue,
+  getIndex,
   makeCenter,
+  children,
 }) => {
   const [select, setSelect] = useState(0)
+  const [compWidth, setCompWidth] = useState(0)
+  const ref = useRef()
   React.useEffect(() => {
     if (selectItem) setSelect(selectItem)
   }, [selectItem])
   React.useEffect(() => {
     if (getValue) getValue(tabItems[select])
+    if (getIndex) getIndex(select)
   }, [select])
+
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: makeCenter ? 'center' : 'flex-start',
-        backgroundColor: 'white',
-      }}
-    >
-      {tabItems.map((d, i) => (
-        <TouchableOpacity
-          key={d}
-          style={{
-            borderBottomWidth: 3,
-            borderBottomColor: select === i ? '#E74974' : 'transparent',
-            paddingVertical: 8,
-            paddingHorizontal: 12,
-          }}
-          onPress={() => setSelect(i)}
-        >
-          <Text
+    <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: makeCenter ? 'center' : 'flex-start',
+          backgroundColor: 'white',
+        }}
+      >
+        {tabItems.map((d, i) => (
+          <TouchableOpacity
+            key={d}
             style={{
-              color: select === i ? '#E74974' : '#5B5B5B',
-              fontSize: 14,
-              fontWeight: 'bold',
+              borderBottomWidth: 3,
+              borderBottomColor: select === i ? '#E74974' : 'transparent',
+              paddingVertical: 8,
+              paddingHorizontal: 12,
+            }}
+            onPress={() => {
+              setSelect(i)
+              if (children) ref.current.scrollTo({ x: compWidth * i, y: 0 })
             }}
           >
-            {d}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Text
+              style={{
+                color: select === i ? '#E74974' : '#5B5B5B',
+                fontSize: 14,
+                fontWeight: 'bold',
+              }}
+            >
+              {d}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      {children ? (
+        <ScrollView
+          horizontal={true}
+          ref={ref}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={true}
+          onLayout={(e) => setCompWidth(e.nativeEvent.layout.width)}
+          onMomentumScrollEnd={(event) => {
+            for (let i = 0; i < tabItems.length; i++) {
+              if (event.nativeEvent.contentOffset.x >= compWidth * i) {
+                setSelect(i)
+              }
+            }
+          }}
+        >
+          {children}
+        </ScrollView>
+      ) : null}
     </View>
   )
 }

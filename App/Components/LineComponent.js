@@ -20,3 +20,16 @@ export const HrCommon = ({ style }) => {
     />
   )
 }
+export const Circle = ({ style }) => {
+  return (
+    <View
+      style={{
+        borderRadius: 100,
+        width: 5,
+        height: 5,
+        backgroundColor: 'black',
+        ...style,
+      }}
+    ></View>
+  )
+}

@@ -8,7 +8,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-//
+import Swiper from 'react-native-swiper'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../Header'
 import {
@@ -152,7 +152,7 @@ const Home = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.cardTitle}>Weekly Featured</Text>
           </View>
-          <Swiper height={'100%'} autoplay>
+          <Swiper height={'100%'} index={0}>
             <View style={{ width: '100%' }}>
               <Image
                 style={{
