@@ -26,5 +26,5 @@ export const L = require('./assets/novelish/L.png')
 export const I = require('./assets/novelish/I.png')
 export const S = require('./assets/novelish/S.png')
 export const T = require('./assets/novelish/T.png')
-
+export const coin = require('./assets/novelish/novelish_coin.png')
 export const gradient = require('./assets/novelish/gradient.png')

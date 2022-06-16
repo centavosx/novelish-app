@@ -623,7 +623,7 @@ const Home = ({ navigation }) => {
   )
 }
 
-const BgCard = ({
+export const BgCard = ({
   children,
   withOpacity,
   noRadiusLeft,

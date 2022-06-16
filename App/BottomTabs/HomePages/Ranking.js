@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native'
 import { SelectTab } from '../../Components/SliderComponents'
+import Feather from 'react-native-vector-icons/Feather'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../Header'
 import {
@@ -68,91 +69,115 @@ const Ranking = ({ navigation }) => {
   )
 }
 
+const Books = ({
+  number,
+  image,
+  title,
+  author,
+  noOfRead,
+  noOfHeart,
+  noOfParts,
+  description,
+  navigation,
+}) => {
+  return (
+    <CardMain
+      touchable={true}
+      style={{ paddingBottom: 1, width: windowWidth - 12 }}
+      onPress={() =>
+        navigation
+          ? navigation.navigate('FullPreview', {
+              image,
+              title,
+              author,
+              noOfRead,
+              noOfHeart,
+              noOfParts,
+              description,
+            })
+          : null
+      }
+    >
+      <View style={{ flexDirection: 'row' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            height: '100%',
+            marginRight: 10,
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: 'bold',
+            }}
+          >
+            {number}
+          </Text>
+        </View>
+
+        <Image
+          source={image}
+          style={{ height: 143.4, width: 72, borderRadius: 5 }}
+        />
+        <View style={{ padding: 8, flex: 1 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{title}</Text>
+          <Text style={{ color: 'grey', fontSize: 12 }}>By: {author}</Text>
+          <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+            <View style={{ flexDirection: 'row', marginRight: 6 }}>
+              <AntDesign name="eye" size={15} />
+              <View style={{ marginLeft: 1 }}>
+                <Text style={{ fontSize: 11, fontWeight: 'bold' }}>Read</Text>
+                <Text style={{ fontWeight: 'bold' }}>{noOfRead}</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginRight: 6,
+              }}
+            >
+              <AntDesign name="heart" size={15} />
+              <View style={{ marginLeft: 1 }}>
+                <Text style={{ fontSize: 11, fontWeight: 'bold' }}>Heart</Text>
+                <Text style={{ fontWeight: 'bold' }}>{noOfHeart}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', marginRight: 6 }}>
+              <Feather name="list" size={15} />
+              <View style={{ marginLeft: 1 }}>
+                <Text style={{ fontSize: 11, fontWeight: 'bold' }}>Parts</Text>
+                <Text style={{ fontWeight: 'bold' }}>{noOfParts}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={{ width: '100%', fontSize: 10, flexWrap: 'wrap' }}>
+              {description}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </CardMain>
+  )
+}
+
 const Pages = ({ index, navigation }) => {
   return (
     <View>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((d) => (
-        <CardMain
-          touchable={true}
-          style={{ paddingBottom: 1, width: windowWidth - 12 }}
-          onPress={() =>
-            navigation ? navigation.navigate('FullPreview') : null
-          }
-        >
-          <View style={{ flexDirection: 'row' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                height: '100%',
-                marginRight: 10,
-                alignItems: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                1
-              </Text>
-            </View>
-
-            <Image
-              source={sample}
-              style={{ height: 143.4, width: 72, borderRadius: 5 }}
-            />
-            <View style={{ padding: 8, flex: 1 }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
-                True Beauty
-              </Text>
-              <Text style={{ color: 'grey', fontSize: 12 }}>
-                By: dahyuniee_
-              </Text>
-              <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                <View style={{ flexDirection: 'row', marginRight: 6 }}>
-                  <AntDesign name="eye" size={15} />
-                  <View style={{ marginLeft: 1 }}>
-                    <Text style={{ fontSize: 11, fontWeight: 'bold' }}>
-                      Read
-                    </Text>
-                    <Text style={{ fontWeight: 'bold' }}>123</Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginRight: 6,
-                  }}
-                >
-                  <AntDesign name="eye" size={15} />
-                  <View style={{ marginLeft: 1 }}>
-                    <Text style={{ fontSize: 11, fontWeight: 'bold' }}>
-                      Read
-                    </Text>
-                    <Text style={{ fontWeight: 'bold' }}>123</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', marginRight: 6 }}>
-                  <AntDesign name="eye" size={15} />
-                  <View style={{ marginLeft: 1 }}>
-                    <Text style={{ fontSize: 11, fontWeight: 'bold' }}>
-                      Read
-                    </Text>
-                    <Text style={{ fontWeight: 'bold' }}>123</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'column' }}>
-                <Text style={{ width: '100%', fontSize: 10, flexWrap: 'wrap' }}>
-                  Patrick “Pack” Walsh may not know exactly where he’s going in
-                  life, but he’s happy where he is. He’s got a girlfriend who
-                  gets him. His single dad is his . . .
-                </Text>
-              </View>
-            </View>
-          </View>
-        </CardMain>
+        <Books
+          image={sample}
+          navigation={navigation}
+          title={'True Beauty'}
+          number={d}
+          noOfHeart={30}
+          noOfRead={1000}
+          noOfParts={31}
+          author={'dahyun__'}
+          description={`Patrick “Pack” Walsh may not know exactly where he’s going in life, but he’s happy where he is. He’s got a girlfriend who gets him. His single dad is his . . .`}
+        />
       ))}
     </View>
   )

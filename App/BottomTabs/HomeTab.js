@@ -9,30 +9,14 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-// import Swiper from 'react-native-swiper'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from './Header'
 import { SimpleTab } from '../Components/SliderComponents'
-import {
-  main,
-  sample,
-  sample1,
-  sample2,
-  sample3,
-  sample4,
-  sample5,
-  fire,
-  jenny,
-  whiteShadow,
-} from '../../images'
-import { styles, windowWidth, windowHeight } from '../../styles'
 import { HrCommon } from '../Components/LineComponent'
-import { MainButton } from '../Components/ButtonComponents'
-import { useState } from 'react'
 import React from 'react'
 import Home from './HomePages/Home'
 import Ranking from './HomePages/Ranking'
 const HomePage = createNativeStackNavigator()
+
 const HomeTab = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>

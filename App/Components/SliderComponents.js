@@ -70,7 +70,6 @@ export const SelectTab = ({
           flexDirection: 'row',
           justifyContent: makeCenter ? 'center' : 'flex-start',
           backgroundColor: 'white',
-          flex: 1,
         }}
       >
         {tabItems.map((d, i) => (
@@ -141,6 +140,7 @@ export const SimpleTab = ({
   makeCenter,
   navigateTab = [],
   navigation,
+  stretch,
 }) => {
   const [select, setSelect] = useState(0)
   React.useEffect(() => {
@@ -156,6 +156,7 @@ export const SimpleTab = ({
         flexDirection: 'row',
         justifyContent: makeCenter ? 'center' : 'flex-start',
         backgroundColor: 'white',
+        flex: stretch ? 1 : 0,
       }}
     >
       {tabItems.map((d, i) => (
@@ -166,6 +167,7 @@ export const SimpleTab = ({
             borderBottomColor: select === i ? '#E74974' : 'transparent',
             paddingVertical: 8,
             paddingHorizontal: 12,
+            flex: stretch ? 1 : 0,
           }}
           onPress={() => {
             navigateTab.length > 0 ? navigation.navigate(navigateTab[i]) : null
@@ -177,6 +179,7 @@ export const SimpleTab = ({
               color: select === i ? '#E74974' : '#5B5B5B',
               fontSize: 14,
               fontWeight: 'bold',
+              textAlign: stretch ? 'center' : null,
             }}
           >
             {d}

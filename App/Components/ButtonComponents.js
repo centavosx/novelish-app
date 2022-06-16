@@ -42,19 +42,38 @@ export const Checkbox = ({ onPress, style }) => {
 export const MainButton = ({
   onPress,
   text,
-  buttonStyle,
-  imageStyle,
+  radius,
+  height,
+  width,
   txtStyle,
+  paddingTop,
+  paddingBottom,
+  paddingLeft,
+  marginTop,
+  marginBottom,
+  paddingRight,
+  fontSize,
 }) => {
   return (
     <TouchableOpacity
-      style={{ margin: 5, width: 110, height: 30 }}
+      style={{
+        margin: 5,
+        width: width ? width : 110,
+        height: height ? height : 30,
+
+        marginTop: marginTop ?? 0,
+        marginBottom: marginBottom ?? 0,
+      }}
       onPress={() => (onPress ? onPress() : null)}
       // onPress={async () => await setReader(false)}
     >
       <LinearGradient
         colors={['#FF749A', '#FF89A9', 'pink']}
-        style={{ width: 110, height: 33, borderRadius: 10 }}
+        style={{
+          width: width ? width : 110,
+          height: height ? height : 33,
+          borderRadius: radius ? radius : 10,
+        }}
         start={{ x: 0, y: 0.41 }}
         end={{ x: 1, y: 0.8 }}
       />
@@ -64,7 +83,11 @@ export const MainButton = ({
           {
             position: 'absolute',
             textAlign: 'center',
-            marginTop: 6,
+            marginTop: paddingTop ?? 6,
+            marginBottom: paddingBottom ?? 0,
+            marginLeft: paddingLeft ?? 0,
+            marginRight: paddingRight ?? 0,
+            fontSize: fontSize ?? null,
             width: '100%',
           },
           txtStyle,
