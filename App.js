@@ -10,6 +10,7 @@ import SignUpScreen from './App/Screens/SignUp'
 import FullPreview from './App/Screens/FullPreview'
 import { useFonts } from 'expo-font'
 import Main from './App/BottomTabs/Main'
+import BookRead from './App/Screens/BookRead'
 const NavigationStack = createNativeStackNavigator()
 export default function App() {
   const [loaded] = useFonts({
@@ -58,6 +59,12 @@ export default function App() {
           options={{ headerShown: false }}
         >
           {(props) => <FullPreview {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen
+          name="BookRead"
+          options={{ headerShown: false }}
+        >
+          {(props) => <BookRead {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>

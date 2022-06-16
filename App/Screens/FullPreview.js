@@ -62,7 +62,7 @@ const FullPreview = ({ navigation, route }) => {
           ]}
         >
           <Description author={route.params.author} />
-          <Parts setDetails={(v) => setDetails(v)} />
+          <Parts setDetails={(v) => setDetails(v)} navigation={navigation} />
         </SelectTab>
       </ScrollView>
       <View
@@ -584,7 +584,7 @@ const HeadImage = ({ image, title, read, parts, ratings }) => {
   )
 }
 
-const Parts = ({ setDetails }) => {
+const Parts = ({ setDetails, navigation }) => {
   return (
     <View style={{ width: windowWidth, padding: 6 }}>
       <View style={{ flexDirection: 'row' }}>
@@ -619,12 +619,14 @@ const Parts = ({ setDetails }) => {
       <Chapter
         chapter={'Chapter 1'}
         chapterName={'Meet'}
+        navigation={navigation}
         coin={20}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
       />
       <Chapter
         chapter={'Chapter 2'}
         chapterName={'Meet'}
+        navigation={navigation}
         coin={20}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
       />
@@ -633,11 +635,13 @@ const Parts = ({ setDetails }) => {
         chapterName={'Meet'}
         coin={20}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
+        navigation={navigation}
       />
       <Chapter
         chapter={'Chapter 4'}
         chapterName={'Meet'}
         coin={20}
+        navigation={navigation}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
       />
       <Chapter
@@ -645,6 +649,7 @@ const Parts = ({ setDetails }) => {
         chapterName={'Meet'}
         coin={20}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
+        navigation={navigation}
       />
       <Chapter
         chapter={'Chapter 7'}
@@ -652,6 +657,7 @@ const Parts = ({ setDetails }) => {
         coin={20}
         locked={true}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
+        navigation={navigation}
       />
       <Chapter
         chapter={'Chapter 8'}
@@ -659,19 +665,27 @@ const Parts = ({ setDetails }) => {
         coin={25}
         locked={true}
         onPress={(v) => (setDetails ? setDetails(v) : null)}
+        navigation={navigation}
       />
     </View>
   )
 }
 
-const Chapter = ({ chapter, chapterName, onPress, locked, coin }) => {
+const Chapter = ({
+  chapter,
+  chapterName,
+  onPress,
+  locked,
+  coin,
+  navigation,
+}) => {
   return (
     <TouchableOpacity
       onPress={() =>
         onPress
           ? locked
             ? onPress({ open: true, coin, chapter, chapterName })
-            : null
+            : navigation.navigate('BookRead')
           : null
       }
     >
