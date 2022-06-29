@@ -111,7 +111,7 @@ const FullPreview = ({ navigation, route }) => {
   )
 }
 
-const generateStar = (i) => {
+export const generateStar = (i) => {
   let x = []
   for (let v = 0; v < i; v++) {
     x.push(

@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   titleAndDetails: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
   },
   novelistContainer: {
     flexDirection: 'row',
