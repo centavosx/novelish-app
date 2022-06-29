@@ -8,7 +8,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
-import Swiper from 'react-native-swiper'
+// import Swiper from 'react-native-swiper'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../Header'
 import {
@@ -31,10 +31,10 @@ const Home = ({ navigation }) => {
   return (
     <ImageBackground source={main} style={styles.bgimage}>
       <ScrollView>
-        <Swiper height={'100%'}>
+        {/* <Swiper height={'100%'}>
           <Image source={sample2} style={{ height: 180, width: '100%' }} />
           <Image source={sample3} style={{ height: 180, width: '100%' }} />
-        </Swiper>
+        </Swiper> */}
         <View style={{ paddingHorizontal: 10 }}>
           <BgCard>
             <View
@@ -152,7 +152,7 @@ const Home = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.cardTitle}>Weekly Featured</Text>
           </View>
-          <Swiper height={'100%'} index={0}>
+          {/* <Swiper height={'100%'} index={0}>
             <View style={{ width: '100%' }}>
               <Image
                 style={{
@@ -230,7 +230,7 @@ const Home = ({ navigation }) => {
                 online. But . . .
               </Text>
             </View>
-          </Swiper>
+          </Swiper> */}
         </BgCard>
         <View style={{ paddingLeft: 10 }}>
           <BgCard noRadiusRight={true} noPaddingRight={true}>

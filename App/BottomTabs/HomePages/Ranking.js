@@ -43,10 +43,10 @@ const Ranking = ({ navigation }) => {
           tabItems={['All', 'Weekly', 'Latest', 'Completed']}
           makeCenter={true}
           topImages={[
-            <HeadImage image={sample} name="Hottest" />,
-            <HeadImage image={sample2} name="Weekly" />,
-            <HeadImage image={sample3} name="Latest" />,
-            <HeadImage image={sample1} name="Completed" />,
+            <HeadImage key={1} image={sample} name="Hottest" />,
+            <HeadImage key={2} image={sample2} name="Weekly" />,
+            <HeadImage key={4} image={sample3} name="Latest" />,
+            <HeadImage key={3} image={sample1} name="Completed" />,
           ]}
         >
           <Pages navigation={navigation} />

@@ -11,6 +11,7 @@ import FullPreview from './App/Screens/FullPreview'
 import { useFonts } from 'expo-font'
 import Main from './App/BottomTabs/Main'
 import BookRead from './App/Screens/BookRead'
+import Comments from './App/Screens/Comments'
 const NavigationStack = createNativeStackNavigator()
 export default function App() {
   const [loaded] = useFonts({
@@ -19,6 +20,7 @@ export default function App() {
     GenBasB: require('./assets/fonts/GenBasB.ttf'),
     GenBasI: require('./assets/fonts/GenBasI.ttf'),
     GenBasR: require('./assets/fonts/GenBasR.ttf'),
+    Cambria: require('./assets/fonts/Cambria.ttf'),
   })
 
   if (!loaded) {
@@ -65,6 +67,12 @@ export default function App() {
           options={{ headerShown: false }}
         >
           {(props) => <BookRead {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen
+          name="Comments"
+          options={{ headerShown: false }}
+        >
+          {(props) => <Comments {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>
