@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { BgCard } from '../BottomTabs/HomePages/Home'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { SelectTab } from '../Components/SliderComponents'
 import {
@@ -58,6 +59,7 @@ const FullPreview = ({ navigation, route }) => {
               image={route.params.image}
               ratings={4.3}
               parts={route.params.noOfParts}
+              navigation={navigation}
             />,
           ]}
         >
@@ -373,7 +375,7 @@ const Description = ({ author }) => {
   )
 }
 
-const UserReply = ({ image, user, message, star, heart }) => {
+export const UserReply = ({ image, user, message, star, heart }) => {
   return (
     <View style={{ flexDirection: 'row', marginVertical: 5 }}>
       <TouchableOpacity style={styles.authorIcon}>
@@ -429,13 +431,14 @@ const Tags = ({ value }) => {
   )
 }
 
-const HeadImage = ({ image, title, read, parts, ratings }) => {
+const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
   return (
     <View style={{ height: 400, width: windowWidth }}>
       <Image
         source={image}
         style={{ position: 'absolute', height: '100%', width: '100%' }}
       />
+
       <Image
         source={darkTop}
         style={{
@@ -452,9 +455,23 @@ const HeadImage = ({ image, title, read, parts, ratings }) => {
           height: '100%',
           width: '100%',
           opacity: 1,
-          bottom: 1,
+          bottom: 0,
         }}
       />
+      <View
+        style={{
+          height: '100%',
+          width: '100%',
+          paddingHorizontal: 10,
+          paddingVertical: 40,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => (navigation ? navigation.goBack() : null)}
+        >
+          <Feather name="arrow-left-circle" size={33} color={'white'} />
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           position: 'absolute',
@@ -706,7 +723,7 @@ const Chapter = ({
   )
 }
 
-const Unlock = ({
+export const Unlock = ({
   image,
   title,
   chapter,

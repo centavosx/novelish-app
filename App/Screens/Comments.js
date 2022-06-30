@@ -50,6 +50,7 @@ import React from 'react'
 
 const Comments = ({ navigation, route }) => {
   const [addComment, setAddComment] = useState(false)
+  const [openComment, setOpenComment] = useState({ open: false })
   return (
     <ImageBackground source={main} style={{ flex: 1 }}>
       <View
@@ -63,7 +64,9 @@ const Comments = ({ navigation, route }) => {
           paddingBottom: 4,
         }}
       >
-        <Feather name="arrow-left-circle" size={33} style={{ top: 10 }} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Feather name="arrow-left-circle" size={33} style={{ top: 10 }} />
+        </TouchableOpacity>
         <View
           style={{
             height: '100%',
@@ -118,7 +121,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -128,7 +131,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -138,7 +141,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -148,7 +151,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -158,7 +161,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -168,7 +171,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -178,7 +181,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
           <UserReply
             image={jenny}
@@ -188,7 +191,7 @@ const Comments = ({ navigation, route }) => {
             message={
               'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
             }
-            onPress={() => setAddComment(true)}
+            onPress={(v) => setOpenComment({ ...v })}
           />
         </ScrollView>
       </CardMain>
@@ -199,6 +202,11 @@ const Comments = ({ navigation, route }) => {
           chapterName={'Meet'}
           title={'True'}
           onPressOut={() => setAddComment(false)}
+        />
+      ) : null}
+      {openComment.open ? (
+        <CommentDetail
+          onPressOut={() => setOpenComment({ ...openComment, open: false })}
         />
       ) : null}
     </ImageBackground>
@@ -229,14 +237,17 @@ const UserReply = ({ image, user, message, star, heart, onPress }) => {
 
           <Text style={{ fontSize: 12 }}>{message}</Text>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
-            <View style={{ flexDirection: 'row', marginRight: 10 }}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', marginRight: 10 }}
+              onPress={() => (onPress ? onPress({ open: true }) : null)}
+            >
               <MaterialCommunityIcons
                 name="message-reply-text-outline"
                 size={13}
                 style={{ marginRight: 3 }}
               />
               <Text style={{ fontSize: 10 }}>Reply</Text>
-            </View>
+            </TouchableOpacity>
             <View style={{ flexDirection: 'row' }}>
               <AntDesign
                 name="heart"
@@ -434,6 +445,197 @@ const CommentAdd = ({
             </TouchableOpacity>
           </View>
         </View>
+      </View>
+    </View>
+  )
+}
+
+const CommentDetail = ({ onPressOut }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        position: 'absolute',
+        width: windowWidth,
+        height: '100%',
+      }}
+    >
+      <TouchableOpacity
+        style={{ flex: 1 }}
+        onPress={() => (onPressOut ? onPressOut() : null)}
+      />
+      <View
+        style={{
+          height: 400,
+          backgroundColor: 'white',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingVertical: 10,
+        }}
+      >
+        <View
+          style={{
+            padding: 10,
+            borderBottomWidth: 0.5,
+            borderBottomColor: 'black',
+          }}
+        >
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'center',
+              position: 'absolute',
+              width: '100%',
+              fontWeight: 'bold',
+              fontSize: 16,
+              margin: 10,
+            }}
+          >
+            Comment Details
+          </Text>
+          <TouchableOpacity onPress={() => (onPressOut ? onPressOut() : null)}>
+            <AntDesign name="closecircleo" size={25} />
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          style={{
+            flex: 1,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            paddingBottom: 50,
+          }}
+        >
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ marginRight: 8 }}>
+              <Image
+                source={jenny}
+                style={{ ...styles.authorIconImage, height: 40, width: 40 }}
+              />
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  color: '#FC5180',
+                  textDecorationLine: 'underline',
+                  fontWeight: 'bold',
+                  fontSize: 16,
+                }}
+              >
+                dahyun_
+              </Text>
+              <View style={{ flexDirection: 'row' }}>{generateStar(5)}</View>
+              <Text style={{ fontSize: 12 }}>
+                bitin huhu kiLan ang next update poh? gaganda po ng stories nyo,
+                pero pinakafavorite ko i2 hehe
+              </Text>
+              <View
+                style={{ flexDirection: 'row', marginTop: 5, marginBottom: 5 }}
+              >
+                <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                  <MaterialCommunityIcons
+                    name="message-reply-text-outline"
+                    size={13}
+                    style={{ marginRight: 3 }}
+                  />
+                  <Text style={{ fontSize: 10 }}>Reply</Text>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <AntDesign
+                    name="heart"
+                    color={'red'}
+                    size={13}
+                    style={{ marginRight: 3 }}
+                  />
+                  <Text style={{ fontSize: 10 }}>{5}</Text>
+                </View>
+              </View>
+              <CommentReply
+                user={'dahyun'}
+                image={jenny}
+                message={
+                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
+                }
+              />
+              <CommentReply
+                user={'dahyun'}
+                image={jenny}
+                message={
+                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
+                }
+              />
+              <CommentReply
+                user={'dahyun'}
+                image={jenny}
+                message={
+                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
+                }
+              />
+              <CommentReply
+                user={'dahyun'}
+                image={jenny}
+                message={
+                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
+                }
+              />
+              <CommentReply
+                user={'dahyun'}
+                image={jenny}
+                message={
+                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
+                }
+              />
+            </View>
+          </View>
+        </ScrollView>
+        <View
+          style={{ flexDirection: 'row', width: '100%', paddingHorizontal: 10 }}
+        >
+          <TextInput
+            placeholder="Write a review"
+            editable={true}
+            multiline={true}
+            style={{
+              borderColor: 'lightgrey',
+              borderWidth: 1,
+              borderRadius: 13,
+              paddingVertical: 3,
+              paddingHorizontal: 10,
+              backgroundColor: 'white',
+              marginRight: 5,
+              maxHeight: 150,
+              flex: 1,
+            }}
+          />
+          <TouchableOpacity style={{ alignSelf: 'center' }}>
+            <FontAwesome name="send" color={'#FC51A3'} size={23} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+const CommentReply = ({ image, user, message }) => {
+  return (
+    <View style={{ flexDirection: 'row', width: '100%' }}>
+      <View style={{ marginRight: 8 }}>
+        <Image
+          source={image}
+          style={{ ...styles.authorIconImage, height: 32, width: 32 }}
+        />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            color: '#FC5180',
+            textDecorationLine: 'underline',
+            fontWeight: 'bold',
+            fontSize: 14,
+          }}
+        >
+          {user}
+        </Text>
+        <Text style={{ fontSize: 12, flex: 1 }}>{message}</Text>
       </View>
     </View>
   )

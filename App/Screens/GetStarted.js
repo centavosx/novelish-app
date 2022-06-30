@@ -6,7 +6,7 @@ import {
   Text,
   Image,
 } from 'react-native'
-
+import { useFonts } from 'expo-font'
 import {
   background,
   logo,
@@ -23,6 +23,14 @@ import {
 } from '../../images'
 import { styles } from '../../styles'
 const GetStarted = ({ navigation }) => {
+  const [loaded] = useFonts({
+    Andasia: require('../../assets/fonts/Andasia-OXA3.otf'),
+    Amsterdam: require('../../assets/fonts/Amsterdam.ttf'),
+  })
+
+  if (!loaded) {
+    return null
+  }
   return (
     <View
       style={{
@@ -36,13 +44,14 @@ const GetStarted = ({ navigation }) => {
         </View>
         <View style={{ ...styles.titleAndDetails }}>
           <View style={{ ...styles.novelistContainer }}>
-            <View style={{ textAlign: 'center' }}>
+            <View style={{ textAlign: 'center', width: '100%' }}>
               <Text
                 style={{
                   fontFamily: 'Andasia',
-                  fontSize: 30,
-                  fontWeight: 'bold',
+                  fontSize: 40,
+
                   color: '#FC5180',
+                  textAlign: 'center',
                 }}
               >
                 Welcome
@@ -50,34 +59,32 @@ const GetStarted = ({ navigation }) => {
               <Text
                 style={{
                   fontFamily: 'Andasia',
-                  fontSize: 25,
-                  fontWeight: 'bold',
+                  fontSize: 20,
+
+                  textAlign: 'center',
                 }}
               >
                 To
               </Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+
+              <Text
+                style={{
+                  fontFamily: 'Andasia',
+                  fontSize: 40,
+                  color: '#FC5163',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+              >
+                N
                 <Text
                   style={{
-                    fontFamily: 'Andasia',
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    color: '#FC5163',
-                  }}
-                >
-                  N
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: 'Andasia',
-                    fontSize: 35,
-                    fontWeight: 'bold',
                     color: '#0075A7',
                   }}
                 >
                   ovelish
                 </Text>
-              </View>
+              </Text>
             </View>
             {/* <Image source={novelish} style={{ width: 216, height: 40 }} /> */}
             {/* <Image source={O} style={styles.imgCharacterNovel} />
@@ -91,7 +98,7 @@ const GetStarted = ({ navigation }) => {
           <View
             style={{
               alignSelf: 'center',
-              marginTop: 18,
+              marginTop: 30,
             }}
           >
             <Text

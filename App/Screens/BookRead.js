@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Unlock } from './FullPreview'
 import Slider from '@react-native-community/slider'
 // import Swiper from 'react-native-swiper'
 import { BgCard } from '../BottomTabs/HomePages/Home'
@@ -50,6 +51,7 @@ const BookRead = ({ navigation, route }) => {
   const [select, setSelect] = useState(1)
   const [darkMode, setDarkMode] = useState(false)
   const [size, setSize] = useState(1)
+  const [showLeftNav, setShowLeftNav] = useState(false)
   return (
     <View
       style={{
@@ -74,7 +76,9 @@ const BookRead = ({ navigation, route }) => {
           paddingBottom: 4,
         }}
       >
-        <Feather name="arrow-left-circle" size={33} style={{ top: 10 }} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Feather name="arrow-left-circle" size={33} style={{ top: 10 }} />
+        </TouchableOpacity>
         <View
           style={{
             height: '100%',
@@ -160,7 +164,7 @@ const BookRead = ({ navigation, route }) => {
         <ScrollView style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
           <Text
             style={{
-              fontSize: 23 * size,
+              fontSize: 25 * size,
               fontWeight: 'bold',
               textShadowColor: 'rgba(0,0,0,0.3)',
 
@@ -180,7 +184,7 @@ const BookRead = ({ navigation, route }) => {
               marginBottom: 50,
               color: darkMode ? 'white' : 'black',
               fontFamily: 'Cambria',
-              fontSize: 16 * size,
+              fontSize: 18 * size,
               letterSpacing: 1,
             }}
           >
@@ -547,7 +551,9 @@ const BookRead = ({ navigation, route }) => {
         }}
       >
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Feather name="list" size={25} />
+          <TouchableOpacity onPress={() => setShowLeftNav(true)}>
+            <Feather name="list" size={25} />
+          </TouchableOpacity>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <TouchableOpacity onPress={() => navigation.navigate('Comments')}>
@@ -563,7 +569,119 @@ const BookRead = ({ navigation, route }) => {
           <Feather name="upload" size={25} />
         </View>
       </View>
+      {showLeftNav ? (
+        <LeftNavigation onPressOut={() => setShowLeftNav(false)} />
+      ) : null}
     </View>
+  )
+}
+
+const LeftNavigation = ({ onPressOut }) => {
+  const [details, setDetails] = useState({
+    open: false,
+    chapterName: '',
+    chapter: '',
+    coin: 0,
+  })
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        flexDirection: 'row',
+      }}
+    >
+      <View
+        style={{
+          width: 280,
+          height: '100%',
+          backgroundColor: 'white',
+          borderTopRightRadius: 10,
+          borderBottomRightRadius: 10,
+        }}
+      >
+        <View style={{ flexDirection: 'row', padding: 15, paddingTop: 35 }}>
+          <Image
+            source={sample}
+            style={{ height: 85, width: 60, marginRight: 8, borderRadius: 5 }}
+          />
+          <View style={{ alignSelf: 'center', flex: 1 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>
+              True Beauty
+            </Text>
+            <Text style={{ fontSize: 12, color: 'grey' }}>By: dahyun__</Text>
+          </View>
+        </View>
+        <View style={{ borderTopWidth: 0.3, borderColor: 'black' }}>
+          <Chapter
+            lock={true}
+            chapter={'Chapter 1'}
+            onPress={(v) => setDetails({ ...v })}
+          />
+          <Chapter
+            lock={true}
+            chapter={'Chapter 1'}
+            onPress={(v) => setDetails({ ...v })}
+          />
+          <Chapter
+            lock={true}
+            chapter={'Chapter 1'}
+            onPress={(v) => setDetails({ ...v })}
+          />
+          <Chapter
+            lock={true}
+            chapter={'Chapter 1'}
+            onPress={(v) => setDetails({ ...v })}
+          />
+        </View>
+      </View>
+      <TouchableOpacity
+        style={{ flex: 1 }}
+        onPress={() => (onPressOut ? onPressOut() : null)}
+      />
+      {details.open ? (
+        <Unlock
+          image={sample}
+          chapter={details.chapter}
+          chapterName={details.chapterName}
+          noOfCoin={details.coin}
+          title={'True Beauty'}
+          onPressOut={() => setDetails({ ...details, open: false })}
+        />
+      ) : null}
+    </View>
+  )
+}
+
+const Chapter = ({ chapter, lock, onPress }) => {
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        onPress
+          ? onPress({
+              chapter: 'Chapter 1',
+              chapterName: 'Meet',
+              coin: 10,
+              open: true,
+            })
+          : null
+      }
+      style={{
+        borderBottomWidth: 0.3,
+        borderCOlor: 'grey',
+        padding: 15,
+        flexDirection: 'row',
+      }}
+    >
+      <Text style={{ flex: 1 }}>{chapter}</Text>
+      {lock ? (
+        <View>
+          <FontAwesome name="lock" color={'grey'} size={19} />
+        </View>
+      ) : null}
+    </TouchableOpacity>
   )
 }
 

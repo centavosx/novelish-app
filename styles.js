@@ -23,8 +23,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   logo: {
-    height: 260,
-    width: 260,
+    height: 230,
+    width: 230,
   },
   notifiedContainer: {
     marginHorizontal: 10,

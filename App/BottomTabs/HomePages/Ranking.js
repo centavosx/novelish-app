@@ -206,7 +206,7 @@ const HeadImage = ({ image, name }) => {
           height: '100%',
           width: '100%',
           opacity: 0.85,
-          bottom: 1,
+          bottom: 0,
         }}
       />
       <View

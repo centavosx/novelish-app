@@ -28,9 +28,9 @@ const HomeTab = ({ navigation }) => {
         navigation={navigation}
       />
       <HomePage.Navigator>
-        {/* <HomePage.Screen name="Home" options={{ headerShown: false }}>
+        <HomePage.Screen name="Home" options={{ headerShown: false }}>
           {(props) => <Home {...props} />}
-        </HomePage.Screen> */}
+        </HomePage.Screen>
         <HomePage.Screen name="Ranking" options={{ headerShown: false }}>
           {(props) => <Ranking {...props} />}
         </HomePage.Screen>

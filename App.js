@@ -21,7 +21,7 @@ export default function App() {
     GenBasI: require('./assets/fonts/GenBasI.ttf'),
     GenBasR: require('./assets/fonts/GenBasR.ttf'),
     Cambria: require('./assets/fonts/Cambria.ttf'),
-    Andasia: require('./assets/fonts/Andasia.ttf'),
+    Andasia: require('./assets/fonts/Andasia-OXA3.otf'),
     Amsterdam: require('./assets/fonts/Amsterdam.ttf'),
   })
 
