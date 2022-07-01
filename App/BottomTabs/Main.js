@@ -3,8 +3,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
+import { main } from '../../images'
 const Tab = createBottomTabNavigator()
 import HomeTab from './HomeTab'
+import LibraryTab from './LibraryTab'
 const Main = () => {
   return (
     <Tab.Navigator
@@ -32,7 +34,7 @@ const Main = () => {
         {(props) => <HomeTab {...props} />}
       </Tab.Screen>
       <Tab.Screen
-        name="HomeTab2"
+        name="LibraryTab"
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="bookshelf" color={color} size={30} />
@@ -43,7 +45,7 @@ const Main = () => {
           },
         }}
       >
-        {(props) => <HomeTab {...props} />}
+        {(props) => <LibraryTab {...props} />}
       </Tab.Screen>
       <Tab.Screen
         name="HomeTab3"

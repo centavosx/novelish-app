@@ -10,11 +10,11 @@ import {
 } from 'react-native'
 import { styles, windowWidth, windowHeight } from '../../styles'
 import React, { useRef, useState } from 'react'
-import Entypo from 'react-native-vector-icons/Entypo'
+
 import { topDesign, logo, mainLogo } from '../../images'
 import { Children } from 'react/cjs/react.production.min'
 
-const Header = ({ logo }) => {
+const Header = ({ logo, title, onPress, rightButton }) => {
   return (
     <View
       style={{
@@ -27,7 +27,9 @@ const Header = ({ logo }) => {
         paddingBottom: 4,
       }}
     >
-      <Image source={mainLogo} style={{ width: 27, height: 45.62 }} />
+      {logo ? (
+        <Image source={mainLogo} style={{ width: 27, height: 45.62 }} />
+      ) : null}
       <View
         style={{
           height: '100%',
@@ -43,11 +45,13 @@ const Header = ({ logo }) => {
             fontSize: 23,
           }}
         >
-          Novelish
+          {title}
         </Text>
       </View>
       <View style={{ flex: 1, alignItems: 'flex-end', top: 10 }}>
-        <Entypo name="magnifying-glass" size={25} />
+        <TouchableOpacity onPress={() => (onPress ? onPress() : null)}>
+          {rightButton}
+        </TouchableOpacity>
       </View>
     </View>
   )

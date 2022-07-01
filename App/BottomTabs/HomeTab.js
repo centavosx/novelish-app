@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native'
 import Header from './Header'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { SimpleTab } from '../Components/SliderComponents'
 import { HrCommon } from '../Components/LineComponent'
 import React from 'react'
@@ -20,7 +21,11 @@ const HomePage = createNativeStackNavigator()
 const HomeTab = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
-      <Header />
+      <Header
+        logo={true}
+        title="Novelish"
+        rightButton={<Entypo name="magnifying-glass" size={25} />}
+      />
       <HrCommon />
       <SimpleTab
         tabItems={['Home', 'Ranking']}
