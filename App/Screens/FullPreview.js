@@ -134,7 +134,7 @@ const Description = ({ author }) => {
     <View scrollEnabled={true} style={{ width: windowWidth }}>
       <CardMain style={{ padding: 5 }}>
         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Overview</Text>
-        <Text style={{ fontSize: 13 }}>
+        <Text style={{ fontSize: 13 }} numberOfLines={6}>
           In her teenage years, Lim Ju-kyung has been treated unfairly by her
           family and bullied by her enemies due to being perceived as ugly. She
           starts learning how to use makeup by binge-watching tutorial videos on
@@ -197,7 +197,7 @@ const Description = ({ author }) => {
           </View>
         </View>
         <View>
-          <Text>
+          <Text numberOfLines={4}>
             Hi, I’m Dahyun. I’m a South Korean comic artist (manhwaga), former
             model, and the creator of True Beauty, I like to draw, play video
             games and eat cake. Thanks for reading my stuff!{' '}

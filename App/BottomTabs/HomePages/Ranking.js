@@ -153,7 +153,10 @@ const Books = ({
             </View>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={{ width: '100%', fontSize: 10, flexWrap: 'wrap' }}>
+            <Text
+              style={{ width: '100%', fontSize: 10, flexWrap: 'wrap' }}
+              numberOfLines={4}
+            >
               {description}
             </Text>
           </View>
@@ -176,7 +179,7 @@ const Pages = ({ index, navigation }) => {
           noOfRead={1000}
           noOfParts={31}
           author={'dahyun__'}
-          description={`Patrick “Pack” Walsh may not know exactly where he’s going in life, but he’s happy where he is. He’s got a girlfriend who gets him. His single dad is his . . .`}
+          description={`Patrick “Pack” Walsh may not know exactly where he’s going in life, but he’s happy where he is. he’s going in life, but he’s happy where he isHe’s got a girlfriend who gets him. His single dad is hishe’s going in life, but he’s happy where he is`}
         />
       ))}
     </View>

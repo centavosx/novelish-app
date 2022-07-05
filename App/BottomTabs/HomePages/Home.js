@@ -187,7 +187,7 @@ const Home = ({ navigation }) => {
                 </Text>
               </View>
 
-              <Text>
+              <Text numberOfLines={3}>
                 As a successful social media journalist with half a million
                 followers, seventeen-year-old Cal is used to sharing his life
                 online. But . . .
@@ -491,7 +491,7 @@ const Home = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: 12 }}>
+              <Text style={{ fontSize: 12 }} numberOfLines={3}>
                 As a successful social media journalist with half a million
                 followers, seventeen-year-old Cal is used to sharing his life
                 online. But . . .
@@ -549,7 +549,7 @@ const Home = ({ navigation }) => {
                   >
                     Sci Fi
                   </Text>
-                  <Text style={{ width: 200, fontSize: 11 }}>
+                  <Text style={{ width: 200, fontSize: 11 }} numberOfLines={4}>
                     Patrick “Pack” Walsh may not know exactly where he’s going
                     in life, but he’s happy where he is. He’s got a girlfriend
                     who gets him. His single dad is his . . .
@@ -597,7 +597,7 @@ const Home = ({ navigation }) => {
                   >
                     Sci Fi
                   </Text>
-                  <Text style={{ width: 200, fontSize: 11 }}>
+                  <Text style={{ width: 200, fontSize: 11 }} numberOfLines={4}>
                     Patrick “Pack” Walsh may not know exactly where he’s going
                     in life, but he’s happy where he is. He’s got a girlfriend
                     who gets him. His single dad is his . . .

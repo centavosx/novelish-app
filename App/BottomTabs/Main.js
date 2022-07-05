@@ -3,6 +3,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
+import NotificationsTab from './NotificationsTab'
+import ProfileTab from './ProfileTab'
 import { main } from '../../images'
 const Tab = createBottomTabNavigator()
 import HomeTab from './HomeTab'
@@ -48,7 +50,7 @@ const Main = () => {
         {(props) => <LibraryTab {...props} />}
       </Tab.Screen>
       <Tab.Screen
-        name="HomeTab3"
+        name="NotificationsTab"
         options={{
           tabBarIcon: ({ color }) => (
             <Feather name="bell" color={color} size={30} />
@@ -59,10 +61,10 @@ const Main = () => {
           },
         }}
       >
-        {(props) => <HomeTab {...props} />}
+        {(props) => <NotificationsTab {...props} />}
       </Tab.Screen>
       <Tab.Screen
-        name="HomeTab4"
+        name="ProfileTab"
         options={{
           tabBarIcon: ({ color }) => (
             <FontAwesome name="user-circle-o" color={color} size={30} />
@@ -73,7 +75,7 @@ const Main = () => {
           },
         }}
       >
-        {(props) => <HomeTab {...props} />}
+        {(props) => <ProfileTab {...props} />}
       </Tab.Screen>
     </Tab.Navigator>
   )
