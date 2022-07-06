@@ -1,4 +1,3 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import {
   TouchableOpacity,
   View,
@@ -10,14 +9,16 @@ import {
   ScrollView,
 } from 'react-native'
 import Header from './Header'
-import Feather from 'react-native-vector-icons/Feather'
-import Octicons from 'react-native-vector-icons/Octicons'
+import Entypo from 'react-native-vector-icons/Entypo'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { HrCommon } from '../Components/LineComponent'
 import { main, sample, topup, transaction, rewards, writer } from '../../images'
 import { styles } from '../../styles'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-const ProfileTab = () => {
+import { CardMain } from '../Components/CardComponents'
+const ProfileTab = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <Header title={'My Profile'} />
@@ -65,7 +66,7 @@ const ProfileTab = () => {
             </View>
           </View>
           <View style={{ padding: 10, flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Card>
+            <Card onPress={() => navigation.navigate('Topup')}>
               <Image source={topup} style={{ width: 55, height: 55 }} />
               <Text
                 style={{ fontSize: 16, fontWeight: 'bold' }}
@@ -74,7 +75,7 @@ const ProfileTab = () => {
                 Top Up
               </Text>
             </Card>
-            <Card>
+            <Card onPress={() => navigation.navigate('Rewards')}>
               <Image source={rewards} style={{ width: 55, height: 55 }} />
               <Text
                 style={{ fontSize: 16, fontWeight: 'bold' }}
@@ -102,13 +103,112 @@ const ProfileTab = () => {
               </Text>
             </Card>
           </View>
+          <TouchableOpacity>
+            <CardMain
+              style={{
+                marginHorizontal: 15,
+                backgroundColor: 'rgba(252,252,252,0.8)',
+              }}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <Entypo name="help-with-circle" size={25} color="#FF85CE" />
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    flex: 1,
+                    alignSelf: 'center',
+                    marginLeft: 5,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Help
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    color: '#FF85CE',
+                  }}
+                >
+                  {'>'}
+                </Text>
+              </View>
+            </CardMain>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <CardMain
+              style={{
+                marginHorizontal: 15,
+                backgroundColor: 'rgba(252,252,252,0.8)',
+              }}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <AntDesign name="infocirlce" size={25} color="#FF85CE" />
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    flex: 1,
+                    alignSelf: 'center',
+                    marginLeft: 5,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  About us
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    color: '#FF85CE',
+                  }}
+                >
+                  {'>'}
+                </Text>
+              </View>
+            </CardMain>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <CardMain
+              style={{
+                marginHorizontal: 15,
+                backgroundColor: 'rgba(252,252,252,0.8)',
+              }}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <Ionicons name="settings" size={25} color="#FF85CE" />
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    flex: 1,
+                    alignSelf: 'center',
+                    marginLeft: 5,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Settings
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    alignSelf: 'center',
+                    fontWeight: 'bold',
+                    color: '#FF85CE',
+                  }}
+                >
+                  {'>'}
+                </Text>
+              </View>
+            </CardMain>
+          </TouchableOpacity>
         </ScrollView>
       </ImageBackground>
     </View>
   )
 }
 
-const Card = ({ children }) => {
+const Card = ({ children, onPress }) => {
   return (
     <TouchableOpacity
       style={{
@@ -116,6 +216,7 @@ const Card = ({ children }) => {
         height: 100,
         padding: 5,
       }}
+      onPress={() => (onPress ? onPress() : null)}
     >
       <View
         style={{

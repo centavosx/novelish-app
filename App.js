@@ -8,10 +8,12 @@ import AreYouAReaderScreen from './App/Screens/AreYouAReader'
 import LoginScreen from './App/Screens/Login'
 import SignUpScreen from './App/Screens/SignUp'
 import FullPreview from './App/Screens/FullPreview'
+import Rewards from './App/Screens/Rewards'
 import { useFonts } from 'expo-font'
 import Main from './App/BottomTabs/Main'
 import BookRead from './App/Screens/BookRead'
 import Comments from './App/Screens/Comments'
+import Topup from './App/Screens/Topup'
 const NavigationStack = createNativeStackNavigator()
 export default function App() {
   const [loaded] = useFonts({
@@ -75,6 +77,12 @@ export default function App() {
           options={{ headerShown: false }}
         >
           {(props) => <Comments {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen name="Rewards" options={{ headerShown: false }}>
+          {(props) => <Rewards {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen name="Topup" options={{ headerShown: false }}>
+          {(props) => <Topup {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>
