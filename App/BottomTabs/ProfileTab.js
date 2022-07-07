@@ -84,7 +84,7 @@ const ProfileTab = ({ navigation }) => {
                 Rewards
               </Text>
             </Card>
-            <Card>
+            <Card onPress={() => navigation.navigate('Transactions')}>
               <Image source={transaction} style={{ width: 55, height: 55 }} />
               <Text
                 style={{ fontSize: 16, fontWeight: 'bold' }}
@@ -93,7 +93,7 @@ const ProfileTab = ({ navigation }) => {
                 Transactions
               </Text>
             </Card>
-            <Card>
+            <Card onPress={() => navigation.navigate('BeAWriter')}>
               <Image source={writer} style={{ width: 55, height: 55 }} />
               <Text
                 style={{ fontSize: 16, fontWeight: 'bold' }}

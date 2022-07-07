@@ -38,6 +38,7 @@ export const SelectTab = ({
   makeCenter,
   children,
   topImages,
+  color,
 }) => {
   const [select, setSelect] = useState(0)
   const ref = useRef()
@@ -78,20 +79,25 @@ export const SelectTab = ({
             style={{
               flex: 1,
               borderBottomWidth: 3,
-              borderBottomColor: select === i ? '#E74974' : 'transparent',
+              borderBottomColor:
+                select === i ? (color ? color : '#E74974') : 'transparent',
               paddingVertical: 8,
             }}
             onPress={() => {
               setSelect(i)
               if (children) {
                 ref.current.scrollTo({ x: compWidth * i, y: 0 })
-                ref2.current.scrollTo({ x: compWidth * i, y: 0 })
+                {
+                  topImages
+                    ? ref2.current.scrollTo({ x: compWidth * i, y: 0 })
+                    : null
+                }
               }
             }}
           >
             <Text
               style={{
-                color: select === i ? '#E74974' : '#5B5B5B',
+                color: select === i ? (color ? color : '#E74974') : '#5B5B5B',
                 fontSize: 14,
                 fontWeight: 'bold',
                 textAlign: 'center',
@@ -113,12 +119,20 @@ export const SelectTab = ({
           onMomentumScrollEnd={(event) => {
             if (event.nativeEvent.contentOffset.x < compWidth) {
               setSelect(0)
-              ref2.current.scrollTo({ x: compWidth * 0, y: 0 })
+              {
+                topImages
+                  ? ref2.current.scrollTo({ x: compWidth * 0, y: 0 })
+                  : null
+              }
             } else {
               for (let i = 1; i < tabItems.length; i++) {
                 if (event.nativeEvent.contentOffset.x <= compWidth * i) {
                   setSelect(i)
-                  ref2.current.scrollTo({ x: compWidth * i, y: 0 })
+                  {
+                    topImages
+                      ? ref2.current.scrollTo({ x: compWidth * i, y: 0 })
+                      : null
+                  }
                   break
                 }
               }

@@ -14,6 +14,9 @@ import Main from './App/BottomTabs/Main'
 import BookRead from './App/Screens/BookRead'
 import Comments from './App/Screens/Comments'
 import Topup from './App/Screens/Topup'
+import Transactions from './App/Screens/Transactions'
+import TransactionHistory from './App/Screens/TransactionHistory'
+import BeAWriter from './App/Screens/BeAWriter'
 const NavigationStack = createNativeStackNavigator()
 export default function App() {
   const [loaded] = useFonts({
@@ -83,6 +86,24 @@ export default function App() {
         </NavigationStack.Screen>
         <NavigationStack.Screen name="Topup" options={{ headerShown: false }}>
           {(props) => <Topup {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen
+          name="Transactions"
+          options={{ headerShown: false }}
+        >
+          {(props) => <Transactions {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen
+          name="TransactionHistory"
+          options={{ headerShown: false }}
+        >
+          {(props) => <TransactionHistory {...props} />}
+        </NavigationStack.Screen>
+        <NavigationStack.Screen
+          name="BeAWriter"
+          options={{ headerShown: false }}
+        >
+          {(props) => <BeAWriter {...props} />}
         </NavigationStack.Screen>
       </NavigationStack.Navigator>
     </NavigationContainer>

@@ -43,8 +43,7 @@ const Topup = ({ navigation }) => {
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
-            paddingTop: 50,
-            paddingHorizontal: 50,
+            padding: 50,
           }}
         >
           <View
