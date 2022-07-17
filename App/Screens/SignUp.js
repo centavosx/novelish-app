@@ -11,10 +11,40 @@ import { topDesign, logo } from '../../images'
 import { styles } from '../../styles'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Zocial from 'react-native-vector-icons/Zocial'
+import Feather from 'react-native-vector-icons/Feather'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { Checkbox } from '../Components/ButtonComponents'
 import { Hr } from '../Components/LineComponent'
+import { registerUser } from '../../api/users'
+import React, { useState } from 'react'
+import sha256 from 'crypto-js/sha256'
 const SignUp = ({ navigation }) => {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [check, setCheck] = useState(false)
+  const [passwordIsOkay, setPasswordIsOkay] = useState(false)
+  const [completed, setCompleted] = useState(false)
+  const register = async () => {
+    setCompleted(
+      await registerUser(name, username, email, sha256(password).toString())
+    )
+  }
+
+  React.useEffect(() => {
+    setPasswordIsOkay(checkPass(password))
+  }, [password])
+
+  const checkPass = (value) => {
+    const strongRegex = new RegExp(
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+    )
+
+    if (strongRegex.test(value)) return true
+    return false
+  }
+
   return (
     <View style={{ ...styles.container, backgroundColor: '#D6DBE8', flex: 1 }}>
       <Image
@@ -41,6 +71,12 @@ const SignUp = ({ navigation }) => {
             source={logo}
             style={{ ...styles.logo, height: 150, width: 150 }}
           />
+          <TouchableOpacity
+            style={{ position: 'absolute', left: 1 }}
+            onPress={() => navigation.goBack()}
+          >
+            <Feather name="arrow-left-circle" size={33} style={{ top: 10 }} />
+          </TouchableOpacity>
         </View>
         <View style={{ marginBottom: 40 }}>
           <Text
@@ -84,7 +120,7 @@ const SignUp = ({ navigation }) => {
                   top: -2,
                 }}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setName(v)}
               />
             </View>
             <View style={styles.txtInput}>
@@ -105,7 +141,7 @@ const SignUp = ({ navigation }) => {
                   top: -2,
                 }}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setUsername(v)}
               />
             </View>
             <View style={styles.txtInput}>
@@ -126,7 +162,7 @@ const SignUp = ({ navigation }) => {
                   top: -2,
                 }}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setEmail(v)}
               />
             </View>
             <View style={styles.txtInput}>
@@ -139,17 +175,24 @@ const SignUp = ({ navigation }) => {
               <TextInput
                 placeholder="Password"
                 placeholderTextColor={'grey'}
-                style={{
-                  color: 'black',
-                  width: '100%',
-                  fontSize: 18,
-                  paddingEnd: 18,
-                  top: -2,
-                }}
+                secureTextEntry={true}
+                style={[
+                  {
+                    width: '100%',
+                    fontSize: 18,
+                    paddingEnd: 18,
+                    top: -2,
+                  },
+                ]}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setPassword(v)}
               />
             </View>
+            {!passwordIsOkay ? (
+              <Text style={{ fontSize: 12, color: 'red' }}>
+                Password is not strong
+              </Text>
+            ) : null}
             <View
               style={{
                 padding: 10,
@@ -157,7 +200,7 @@ const SignUp = ({ navigation }) => {
                 paddingTop: 20,
               }}
             >
-              <Checkbox onPress={(v) => console.log(v)} />
+              <Checkbox onPress={(v) => setCheck(v)} />
 
               <View>
                 <Text style={{ marginLeft: 8, color: '#ABAFBA' }}>
@@ -170,7 +213,18 @@ const SignUp = ({ navigation }) => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.loginButton}>
+            {completed ? (
+              <Text style={{ color: 'green' }}>Successfully registered</Text>
+            ) : null}
+            <TouchableOpacity
+              style={[
+                styles.loginButton,
+                !check || !passwordIsOkay ? { backgroundColor: 'grey' } : {},
+              ]}
+              onPress={async () =>
+                check && passwordIsOkay ? await register() : null
+              }
+            >
               <Text
                 style={{
                   width: '100%',

@@ -38,78 +38,149 @@ import { HrCommon } from '../Components/LineComponent'
 import { MainButton } from '../Components/ButtonComponents'
 import { useState } from 'react'
 import { CardMain } from '../Components/CardComponents'
+import { ViewBook, likeBook, saveBook } from '../../api/books'
 import React from 'react'
 const FullPreview = ({ navigation, route }) => {
+  const [data, setData] = useState({ chapters: [], tags: [], comments: [] })
   const [details, setDetails] = useState({
+    id: null,
     open: false,
     chapterName: '',
     chapter: '',
     coin: 0,
   })
+
+  React.useEffect(() => {
+    getBookData()
+  }, [])
+
+  const getBookData = async () => {
+    const data = await ViewBook(route.params.id)
+    setData(data)
+  }
+
   return (
     <ImageBackground source={main} style={styles.bgimage}>
-      <ScrollView>
+      <ScrollView scrollEnabled={true} pagingEnabled={true}>
         <SelectTab
           tabItems={['Description', 'Parts']}
           makeCenter={true}
           topImages={[
             <HeadImage
-              title={route.params.title}
-              read={route.params.noOfRead}
-              image={route.params.image}
-              ratings={4.3}
-              parts={route.params.noOfParts}
+              title={data.bookName}
+              read={data.totalReads}
+              image={{ uri: data.bookCoverImg }}
+              ratings={data.rating ?? 0}
+              parts={data.chapters.length}
               navigation={navigation}
             />,
           ]}
         >
-          <Description author={route.params.author} />
-          <Parts setDetails={(v) => setDetails(v)} navigation={navigation} />
+          <Description
+            author={data.bookAuthor}
+            tagArr={data.tags}
+            desc={data.description}
+            reviews={data.comments}
+          />
+          <Parts
+            setDetails={(v) => setDetails(v)}
+            data={data.chapters}
+            navigation={navigation}
+          />
         </SelectTab>
       </ScrollView>
-      <View
-        style={{
-          backgroundColor: 'white',
-          flexDirection: 'row',
-          paddingHorizontal: 12,
-          paddingVertical: 10,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: '#D7D6D6',
-            borderRadius: 15,
-            paddingVertical: 8,
-            paddingHorizontal: 14,
-          }}
-        >
-          <FontAwesome name="bookmark" size={22} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <MainButton
-            text={'Start Reading'}
-            height={40}
-            width={'100%'}
-            radius={45}
-            paddingTop={7}
-            paddingBottom={10}
-            marginTop={0}
-            marginBottom={0}
-            txtStyle={{ fontSize: 18 }}
-          />
-        </View>
-      </View>
+      <Bottom id={data._id} liked={data.likedByUser} saved={data.saved} />
       {details.open ? (
         <Unlock
-          image={route.params.image}
+          image={{ uri: data.bookCoverImg }}
           chapter={details.chapter}
           chapterName={details.chapterName}
           noOfCoin={details.coin}
-          title={route.params.title}
+          title={data.bookName}
           onPressOut={() => setDetails({ ...details, open: false })}
         />
       ) : null}
     </ImageBackground>
+  )
+}
+
+export const Bottom = ({ id, liked, saved }) => {
+  const [like, setLike] = useState(false)
+  const [save, setSave] = useState(false)
+  const [waitForLike, setWaitForLike] = useState(false)
+  const [waitForSave, setWaitForSave] = useState(false)
+  React.useEffect(() => {
+    setLike(liked ?? false)
+  }, [liked])
+  React.useEffect(() => {
+    setSave(saved ?? false)
+  }, [saved])
+
+  const likeABook = async () => {
+    setWaitForLike(true)
+
+    if (await likeBook(id)) {
+      setLike(!like)
+    }
+    setWaitForLike(false)
+  }
+  const saveABook = async () => {
+    setWaitForSave(true)
+    if (await saveBook(id)) {
+      setSave(!save)
+    }
+    setWaitForSave(false)
+  }
+  return (
+    <View
+      style={{
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#D7D6D6',
+          borderRadius: 15,
+          paddingVertical: 8,
+          paddingHorizontal: 14,
+        }}
+        onPress={async () => (!waitForSave ? await saveABook() : null)}
+      >
+        <FontAwesome
+          name="bookmark"
+          size={22}
+          color={save ? 'green' : 'black'}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#D7D6D6',
+          marginLeft: 5,
+          borderRadius: 15,
+          paddingVertical: 8,
+          paddingHorizontal: 10,
+        }}
+        onPress={async () => (!waitForLike ? await likeABook() : null)}
+      >
+        <FontAwesome name="heart" size={22} color={!like ? 'black' : 'red'} />
+      </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <MainButton
+          text={'Start Reading'}
+          height={40}
+          width={'100%'}
+          radius={45}
+          paddingTop={7}
+          paddingBottom={10}
+          marginTop={0}
+          marginBottom={0}
+          txtStyle={{ fontSize: 18 }}
+        />
+      </View>
+    </View>
   )
 }
 
@@ -129,31 +200,23 @@ export const generateStar = (i) => {
   return x.map((v) => v)
 }
 
-const Description = ({ author }) => {
+const Description = ({ author, tagArr, desc, reviews }) => {
   return (
-    <View scrollEnabled={true} style={{ width: windowWidth }}>
+    <ScrollView
+      nestedScrollEnabled={true}
+      scrollEnabled={true}
+      style={{ width: windowWidth, height: windowHeight - 60 }}
+    >
       <CardMain style={{ padding: 5 }}>
         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Overview</Text>
         <Text style={{ fontSize: 13 }} numberOfLines={6}>
-          In her teenage years, Lim Ju-kyung has been treated unfairly by her
-          family and bullied by her enemies due to being perceived as ugly. She
-          starts learning how to use makeup by binge-watching tutorial videos on
-          the Internet. She masters the art and her makeover proves to be . . .{' '}
+          {desc}
         </Text>
       </CardMain>
       <CardMain style={{ padding: 5 }}>
         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Tags</Text>
         <View style={{ marginTop: 7, flexDirection: 'row', flexWrap: 'wrap' }}>
-          <Tags value={'drama'} />
-          <Tags value={'heartstopper'} />
-          <Tags value={'webcomic'} />
-          <Tags value={'school'} />
-          <Tags value={'love'} />
-          <Tags value={'romance'} />
-          <Tags value={'teens'} />
-          <Tags value={'teenlove'} />
-          <Tags value={'lovestory'} />
-          <Tags value={'puppylove'} />
+          {tagArr?.map((d, i) => <Tags key={i} value={d.tagName} />) ?? null}
         </View>
       </CardMain>
       <CardMain>
@@ -218,24 +281,17 @@ const Description = ({ author }) => {
           </View>
         </View>
         <View>
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={5}
-            heart={10}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-          />
+          {reviews?.map((d, i) => (
+            <UserReply
+              key={i}
+              image={{ uri: d.img }}
+              user={d.username}
+              star={d.rating}
+              heart={d.likes}
+              message={d.message}
+            />
+          ))}
+
           <View
             style={{
               position: 'absolute',
@@ -263,115 +319,56 @@ const Description = ({ author }) => {
           />
         </View>
       </CardMain>
-      <BgCard
-        noRadiusRight={true}
-        noPaddingRight={true}
-        style={{ backgroundColor: 'white', marginLeft: 10, marginBottom: 10 }}
-      >
+      <BgCard style={{ backgroundColor: 'white' }}>
         <View style={{ flexDirection: 'row' }}>
           <Text style={styles.cardTitle}>Updated Stories</Text>
         </View>
-        <ScrollView
-          horizontal={true}
-          style={{ flexDirection: 'row', flex: 1 }}
-          contentContainerStyle={{
-            flexGrow: windowWidth,
-
-            padding: 10,
-          }}
-        >
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}>
           <TouchableOpacity>
             <Image
               source={sample2}
               style={{
                 height: 143,
-                width: 111,
                 borderRadius: 10,
                 margin: 3,
+                width:
+                  windowWidth > 300
+                    ? (windowWidth - 6) / 3.3
+                    : (windowWidth - 6) / 2.2,
               }}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={sample1}
-              style={{
-                height: 143,
-                width: 111,
-                borderRadius: 10,
-                margin: 3,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={sample4}
-              style={{
-                height: 143,
-                width: 111,
-                borderRadius: 10,
-                margin: 3,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={sample}
-              style={{
-                height: 143,
-                width: 111,
-                borderRadius: 10,
-                margin: 3,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={sample5}
-              style={{
-                height: 143,
-                width: 111,
-                borderRadius: 10,
-                margin: 3,
-              }}
-            />
-          </TouchableOpacity>
-
           <TouchableOpacity>
             <Image
               source={sample2}
               style={{
                 height: 143,
-                width: 111,
                 borderRadius: 10,
                 margin: 3,
+                width:
+                  windowWidth > 300
+                    ? (windowWidth - 6) / 3.3
+                    : (windowWidth - 6) / 2.2,
               }}
             />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image
-              source={sample1}
+              source={sample2}
               style={{
                 height: 143,
-                width: 111,
                 borderRadius: 10,
                 margin: 3,
+                width:
+                  windowWidth > 300
+                    ? (windowWidth - 6) / 3.3
+                    : (windowWidth - 6) / 2.2,
               }}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={sample1}
-              style={{
-                height: 143,
-                width: 111,
-                borderRadius: 10,
-                margin: 3,
-              }}
-            />
-          </TouchableOpacity>
-        </ScrollView>
+        </View>
       </BgCard>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -601,9 +598,13 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
   )
 }
 
-const Parts = ({ setDetails, navigation }) => {
+const Parts = ({ setDetails, navigation, data }) => {
   return (
-    <View style={{ width: windowWidth, padding: 6 }}>
+    <ScrollView
+      nestedScrollEnabled={true}
+      scrollEnabled={true}
+      style={{ width: windowWidth, height: windowHeight - 80, padding: 6 }}
+    >
       <View style={{ flexDirection: 'row' }}>
         <View style={{ flex: 1, alignItems: 'flex-start' }}>
           <TouchableOpacity
@@ -633,58 +634,18 @@ const Parts = ({ setDetails, navigation }) => {
           />
         </View>
       </View>
-      <Chapter
-        chapter={'Chapter 1'}
-        chapterName={'Meet'}
-        navigation={navigation}
-        coin={20}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-      />
-      <Chapter
-        chapter={'Chapter 2'}
-        chapterName={'Meet'}
-        navigation={navigation}
-        coin={20}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-      />
-      <Chapter
-        chapter={'Chapter 3'}
-        chapterName={'Meet'}
-        coin={20}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-        navigation={navigation}
-      />
-      <Chapter
-        chapter={'Chapter 4'}
-        chapterName={'Meet'}
-        coin={20}
-        navigation={navigation}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-      />
-      <Chapter
-        chapter={'Chapter 5'}
-        chapterName={'Meet'}
-        coin={20}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-        navigation={navigation}
-      />
-      <Chapter
-        chapter={'Chapter 7'}
-        chapterName={'Meet'}
-        coin={20}
-        locked={true}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-        navigation={navigation}
-      />
-      <Chapter
-        chapter={'Chapter 8'}
-        chapterName={'Talk'}
-        coin={25}
-        locked={true}
-        onPress={(v) => (setDetails ? setDetails(v) : null)}
-        navigation={navigation}
-      />
-    </View>
+      {data?.map((d, i) => (
+        <Chapter
+          key={i}
+          chapter={'Chapter ' + d.chapterNumber}
+          chapterName={d.chapterName}
+          navigation={navigation}
+          coin={d.coinPrice}
+          locked={d.unlockedByUser ? false : d.coinPrice > 0}
+          onPress={(v) => (setDetails ? setDetails(v) : null)}
+        />
+      ))}
+    </ScrollView>
   )
 }
 
@@ -724,6 +685,7 @@ const Chapter = ({
 }
 
 export const Unlock = ({
+  id,
   image,
   title,
   chapter,

@@ -39,6 +39,7 @@ export const SelectTab = ({
   children,
   topImages,
   color,
+  scroll,
 }) => {
   const [select, setSelect] = useState(0)
   const ref = useRef()
@@ -115,6 +116,7 @@ export const SelectTab = ({
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={true}
+          scrollEnabled={scroll === true || scroll === false ? scroll : true}
           onLayout={onLayout}
           onMomentumScrollEnd={(event) => {
             if (event.nativeEvent.contentOffset.x < compWidth) {

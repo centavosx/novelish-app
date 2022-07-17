@@ -26,14 +26,34 @@ import {
 import { styles, windowWidth, windowHeight } from '../../../styles'
 import { HrCommon } from '../../Components/LineComponent'
 import { MainButton } from '../../Components/ButtonComponents'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { getAllBooks } from '../../../api/books'
 const Home = ({ navigation }) => {
+  const [data, setData] = useState({
+    trending: [],
+    featured: [],
+    completed: [],
+    updated: [],
+    topAuthors: [],
+    editorsPick: [],
+  })
+  React.useEffect(() => {
+    setBooks()
+  }, [])
+  const setBooks = async () => {
+    setData(await getAllBooks())
+  }
   return (
     <ImageBackground source={main} style={styles.bgimage}>
       <ScrollView>
         <Swiper height={'100%'}>
-          <Image source={sample2} style={{ height: 180, width: '100%' }} />
-          <Image source={sample3} style={{ height: 180, width: '100%' }} />
+          {data.trending.map((d, i) => (
+            <Image
+              key={i}
+              source={{ uri: d.bookCoverImg }}
+              style={{ height: 180, width: '100%' }}
+            />
+          ))}
         </Swiper>
         <View style={{ paddingHorizontal: 10 }}>
           <BgCard>
@@ -79,72 +99,20 @@ const Home = ({ navigation }) => {
                 justifyContent: 'center',
               }}
             >
-              <TouchableOpacity>
-                <Image
-                  source={sample}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample3}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample5}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample4}
-                  style={{
-                    height: windowWidth > 300 ? 126.09 : 226.09,
-                    width: windowWidth > 300 ? 100 : 200,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
+              {data.trending.map((d, i) => (
+                <TouchableOpacity key={i}>
+                  <Image
+                    key={i}
+                    source={{ uri: d.bookCoverImg }}
+                    style={{
+                      height: windowWidth > 300 ? 126.09 : 226.09,
+                      width: windowWidth > 300 ? 100 : 200,
+                      borderRadius: 10,
+                      margin: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+              ))}
             </View>
           </BgCard>
         </View>
@@ -152,84 +120,44 @@ const Home = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.cardTitle}>Weekly Featured</Text>
           </View>
-          <Swiper height={'100%'} index={0}>
-            <View style={{ width: '100%' }}>
-              <Image
-                style={{
-                  width: windowWidth - 30,
-                  height: 182,
-                  borderRadius: 10,
-                  marginVertical: 8,
-                }}
-                resizeMode="cover"
-                source={sample4}
-              />
-              <View style={{ flexDirection: 'row' }}>
-                <Text
-                  style={{ fontWeight: 'bold', fontSize: 23, marginBottom: 3 }}
-                >
-                  {'Lost Star '}
-                  <AntDesign
-                    name="heart"
-                    color={'red'}
-                    size={13}
-                    style={{ marginLeft: 10 }}
-                  />
+          <Swiper height={'100%'}>
+            {data.featured.map((d, i) => (
+              <View style={{ width: '100%' }} key={i}>
+                <Image
+                  style={{
+                    width: windowWidth - 30,
+                    height: 182,
+                    borderRadius: 10,
+                    marginVertical: 8,
+                  }}
+                  resizeMode="cover"
+                  source={{ uri: d.bookCoverImg }}
+                />
+                <View style={{ flexDirection: 'row' }}>
                   <Text
                     style={{
-                      fontSize: 13,
-                      fontWeight: 'normal',
-                      marginLeft: 5,
+                      fontWeight: 'bold',
+                      fontSize: 23,
+                      marginBottom: 3,
                     }}
                   >
-                    {' 8.4 '}
+                    {d.bookName + ' '}
+                    <AntDesign name="heart" color={'red'} size={13} />{' '}
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 'normal',
+                      }}
+                      numberOfLines={1}
+                    >
+                      {d.likes}
+                    </Text>
                   </Text>
-                </Text>
-              </View>
+                </View>
 
-              <Text numberOfLines={3}>
-                As a successful social media journalist with half a million
-                followers, seventeen-year-old Cal is used to sharing his life
-                online. But . . .
-              </Text>
-            </View>
-            <View style={{ width: '100%' }}>
-              <Image
-                style={{
-                  width: windowWidth - 30,
-                  height: 182,
-                  borderRadius: 10,
-                  marginVertical: 8,
-                }}
-                resizeMode="cover"
-                source={sample3}
-              />
-              <Text
-                style={{ fontWeight: 'bold', fontSize: 23, marginBottom: 3 }}
-              >
-                {'Lost Star '}
-                <AntDesign
-                  name="heart"
-                  color={'red'}
-                  size={13}
-                  style={{ marginLeft: 10 }}
-                />
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 'normal',
-                    marginLeft: 5,
-                  }}
-                >
-                  {' 8.4 '}
-                </Text>
-              </Text>
-              <Text>
-                As a successful social media journalist with half a million
-                followers, seventeen-year-old Cal is used to sharing his life
-                online. But . . .
-              </Text>
-            </View>
+                <Text numberOfLines={3}>{d.description}</Text>
+              </View>
+            ))}
           </Swiper>
         </BgCard>
         <View style={{ paddingLeft: 10 }}>
@@ -238,95 +166,19 @@ const Home = ({ navigation }) => {
               <Text style={styles.cardTitle}>Completed Stories</Text>
             </View>
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample3}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <Image
-                  source={sample4}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
+              {data.completed.map((d, i) => (
+                <TouchableOpacity key={i}>
+                  <Image
+                    source={{ uri: d.bookCoverImg }}
+                    style={{
+                      height: 143,
+                      width: 111,
+                      borderRadius: 10,
+                      margin: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </BgCard>
           <BgCard noRadiusRight={true} noPaddingRight={true}>
@@ -334,171 +186,102 @@ const Home = ({ navigation }) => {
               <Text style={styles.cardTitle}>Updated Stories</Text>
             </View>
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
-              <TouchableOpacity>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample4}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample5}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image
-                  source={sample1}
-                  style={{
-                    height: 143,
-                    width: 111,
-                    borderRadius: 10,
-                    margin: 3,
-                  }}
-                />
-              </TouchableOpacity>
+              {data.updated.map((d, i) => (
+                <TouchableOpacity key={i}>
+                  <Image
+                    source={{ uri: d.bookCoverImg }}
+                    style={{
+                      height: 143,
+                      width: 111,
+                      borderRadius: 10,
+                      margin: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </BgCard>
         </View>
-        <View style={{ height: 400, width: '100%', marginVertical: 10 }}>
-          <Image
-            source={sample2}
-            style={{ height: '100%', width: '100%', position: 'absolute' }}
-          />
-          <Image
-            source={whiteShadow}
-            style={{ height: '100%', width: '100%', position: 'absolute' }}
-          />
-          <View
-            style={{
-              bottom: 1,
-              position: 'absolute',
-              width: '100%',
-            }}
-          >
-            <View style={{ height: '100%', padding: 15 }}>
+        {data.featured.map((d, i) =>
+          i === 0 ? (
+            <View
+              style={{ height: 400, width: '100%', marginVertical: 10 }}
+              key={i}
+            >
               <Image
                 source={sample2}
-                style={{
-                  width: 120,
-                  height: 200,
-                  borderRadius: 10,
-                  marginBottom: 10,
-                }}
+                style={{ height: '100%', width: '100%', position: 'absolute' }}
               />
+              <Image
+                source={whiteShadow}
+                style={{ height: '100%', width: '100%', position: 'absolute' }}
+              />
+              <View
+                style={{
+                  bottom: 1,
+                  position: 'absolute',
+                  width: '100%',
+                }}
+              >
+                <View style={{ height: '100%', padding: 15 }}>
+                  <Image
+                    source={{ uri: d.bookCoverImg }}
+                    style={{
+                      width: 120,
+                      height: 200,
+                      borderRadius: 10,
+                      marginBottom: 10,
+                    }}
+                  />
 
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                MARRIED TO MY BILLIONAIRE BROTHER-IN-LAW
-              </Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ marginRight: 10 }}>Romance</Text>
-                <View
-                  style={{
-                    borderRadius: 10,
-                    width: 5,
-                    height: 5,
-                    backgroundColor: 'grey',
-                    top: 8,
-                    marginRight: 10,
-                  }}
-                ></View>
-                <Text style={{ marginRight: 10 }}>Love</Text>
-                <View
-                  style={{
-                    borderRadius: 10,
-                    width: 5,
-                    height: 5,
-                    backgroundColor: 'grey',
-                    top: 8,
-                    marginRight: 10,
-                  }}
-                ></View>
-                <Text style={{ marginRight: 10 }}>2020</Text>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                    {d.bookName}
+                  </Text>
                   <View style={{ flexDirection: 'row' }}>
-                    <AntDesign
-                      name="heart"
-                      color={'red'}
-                      style={{ margin: 3 }}
-                    />
-                    <Text>8.4</Text>
+                    <Text style={{ marginRight: 10 }}>{d.mainGenre}</Text>
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        width: 5,
+                        height: 5,
+                        backgroundColor: 'grey',
+                        top: 8,
+                        marginRight: 10,
+                      }}
+                    ></View>
+                    <Text style={{ marginRight: 10 }}>{d.secondaryGenre}</Text>
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        width: 5,
+                        height: 5,
+                        backgroundColor: 'grey',
+                        top: 8,
+                        marginRight: 10,
+                      }}
+                    ></View>
+                    <Text style={{ marginRight: 10 }}>
+                      {new Date(d.publishDate).getFullYear()}
+                    </Text>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <AntDesign
+                          name="heart"
+                          color={'red'}
+                          style={{ margin: 3 }}
+                        />
+                        <Text>{d.likes}</Text>
+                      </View>
+                    </View>
                   </View>
+                  <Text style={{ fontSize: 12 }} numberOfLines={3}>
+                    {d.description}
+                  </Text>
                 </View>
               </View>
-              <Text style={{ fontSize: 12 }} numberOfLines={3}>
-                As a successful social media journalist with half a million
-                followers, seventeen-year-old Cal is used to sharing his life
-                online. But . . .
-              </Text>
             </View>
-          </View>
-        </View>
+          ) : null
+        )}
         <View style={{ paddingHorizontal: 10 }}>
           <BgCard>
             <View style={{ flexDirection: 'row' }}>
@@ -513,10 +296,13 @@ const Home = ({ navigation }) => {
                 paddingVertical: 10,
               }}
             >
-              {[1, 2, 3, 4, 5].map(() => (
-                <TouchableOpacity style={styles.authorIcon}>
-                  <Image source={jenny} style={styles.authorIconImage} />
-                  <Text style={styles.authorIconText}>Jenny</Text>
+              {data.topAuthors.map((d, i) => (
+                <TouchableOpacity style={styles.authorIcon} key={i}>
+                  <Image
+                    source={{ uri: d.img }}
+                    style={styles.authorIconImage}
+                  />
+                  <Text style={styles.authorIconText}>{d.penName}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -526,96 +312,78 @@ const Home = ({ navigation }) => {
         <View style={{ padding: 10 }}>
           <Text style={styles.cardTitle}>Editor's Pick</Text>
           <ScrollView style={{ flexDirection: 'row' }} horizontal={true}>
-            <View style={[styles.cardGenres, { borderRadius: 20 }]}>
-              <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                <Image
-                  source={sample3}
+            {data.editorsPick.map((d, i) => (
+              <View
+                style={[
+                  styles.cardGenres,
+                  { borderRadius: 20, width: windowWidth - 30 },
+                ]}
+                key={i}
+              >
+                <View
                   style={{
-                    height: 137,
-                    width: 81,
-                    borderRadius: 20,
-                    marginRight: 10,
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    width: '100%',
                   }}
-                />
-                <View>
-                  <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                    The Ninth Time
-                  </Text>
-                  <Text
-                    style={[
-                      styles.textGenres,
-                      { color: 'black', textAlign: 'left' },
-                    ]}
-                  >
-                    Sci Fi
-                  </Text>
-                  <Text style={{ width: 200, fontSize: 11 }} numberOfLines={4}>
-                    Patrick “Pack” Walsh may not know exactly where he’s going
-                    in life, but he’s happy where he is. He’s got a girlfriend
-                    who gets him. His single dad is his . . .
-                  </Text>
-                  <MainButton
-                    text={'Start Reading'}
-                    buttonStyle={{
-                      width: 115,
-                      height: 40,
+                >
+                  <Image
+                    source={{ uri: d.bookCoverImg }}
+                    style={{
+                      height: 137,
+                      width: 81,
                       borderRadius: 20,
-                      marginTop: 5,
+                      marginRight: 10,
                     }}
-                    imageStyle={{
-                      width: '100%',
-                      height: '100%',
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        width: '100%',
+                      }}
+                      numberOfLines={1}
+                    >
+                      {d.bookName}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.textGenres,
+                        { color: 'black', textAlign: 'left' },
+                      ]}
+                    >
+                      {d.mainGenre}
+                    </Text>
+                    <Text
+                      style={{ width: 200, fontSize: 11 }}
+                      numberOfLines={4}
+                    >
+                      {d.description}
+                    </Text>
+                    <View style={{ position: 'absolute', bottom: 1 }}>
+                      <MainButton
+                        text={'Start Reading'}
+                        buttonStyle={{
+                          width: 115,
+                          height: 40,
+                          borderRadius: 20,
+                          marginTop: 5,
+                        }}
+                        imageStyle={{
+                          width: '100%',
+                          height: '100%',
 
-                      paddingVertical: 3,
-                      paddingTop: 6,
-                    }}
-                    txtStyle={{ fontSize: 14 }}
-                  />
+                          paddingVertical: 3,
+                          paddingTop: 6,
+                        }}
+                        txtStyle={{ fontSize: 14 }}
+                      />
+                    </View>
+                  </View>
                 </View>
               </View>
-            </View>
-            <View style={[styles.cardGenres, { borderRadius: 20 }]}>
-              <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                <Image
-                  source={sample2}
-                  style={{
-                    height: 137,
-                    width: 81,
-                    borderRadius: 20,
-                    marginRight: 10,
-                  }}
-                />
-                <View>
-                  <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                    The Ninth Time
-                  </Text>
-                  <Text
-                    style={[
-                      styles.textGenres,
-                      { color: 'black', textAlign: 'left' },
-                    ]}
-                  >
-                    Sci Fi
-                  </Text>
-                  <Text style={{ width: 200, fontSize: 11 }} numberOfLines={4}>
-                    Patrick “Pack” Walsh may not know exactly where he’s going
-                    in life, but he’s happy where he is. He’s got a girlfriend
-                    who gets him. His single dad is his . . .
-                  </Text>
-                  <MainButton
-                    text={'Start Reading'}
-                    buttonStyle={{
-                      width: 115,
-                      height: 40,
-                      padding: 1,
-                      borderRadius: 100,
-                      borderWidth: 1,
-                    }}
-                    txtStyle={{ fontSize: 14 }}
-                  />
-                </View>
-              </View>
-            </View>
+            ))}
           </ScrollView>
         </View>
       </ScrollView>

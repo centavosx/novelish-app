@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import Header from './Header'
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -17,9 +18,32 @@ import { main, sample } from '../../images'
 import { styles } from '../../styles'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-const LibraryTab = () => {
+import { getLibraries, removeBooks } from '../../api/users'
+const LibraryTab = ({ navigation }) => {
   const [edit, setEdit] = useState(false)
   const [selected, setSelected] = useState([])
+  const [data, setData] = useState([])
+  const [waitToRemove, setWaitToRemove] = useState(false)
+  useFocusEffect(
+    React.useCallback(() => {
+      setEdit(false)
+      setSelected([])
+      getLibrary()
+    }, [])
+  )
+  const getLibrary = async () => {
+    const data = await getLibraries()
+    setData(data)
+  }
+  const remove = async () => {
+    setWaitToRemove(true)
+    if (await removeBooks(selected)) {
+      setData(data.filter((d) => !selected.includes(d._id)))
+    }
+    setEdit(false)
+    setSelected([])
+    setWaitToRemove(false)
+  }
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -43,25 +67,30 @@ const LibraryTab = () => {
       <ImageBackground source={main} style={styles.bgimage}>
         <ScrollView>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', flex: 1 }}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((d, i) => (
+            {data.map((d, i) => (
               <Book
-                image={sample}
-                key={d}
-                bookName="True Love"
+                image={{ uri: d.bookCoverImg }}
+                key={d._id}
+                bookName={d.bookName}
+                id={d._id}
                 edit={edit}
-                selected={selected.includes(i)}
-                onPress={() =>
-                  selected.includes(i)
-                    ? setSelected(selected.filter((d) => d !== i))
-                    : setSelected([...selected, i])
-                }
+                selected={selected.includes(d._id)}
+                navigation={navigation}
+                onPress={() => {
+                  selected.includes(d._id)
+                    ? setSelected(selected.filter((d2) => d2 !== d._id))
+                    : setSelected([...selected, d._id])
+                }}
               />
             ))}
           </View>
         </ScrollView>
         {edit ? (
           selected.length > 0 ? (
-            <TouchableOpacity style={{ height: 50, width: '100%' }}>
+            <TouchableOpacity
+              style={{ height: 50, width: '100%' }}
+              onPress={async () => (!waitToRemove ? await remove() : null)}
+            >
               <LinearGradient
                 colors={['#FF749A', '#FF89A9', 'pink']}
                 style={{
@@ -92,10 +121,21 @@ const LibraryTab = () => {
   )
 }
 
-const Book = ({ image, bookName, onPress, edit, selected }) => {
+const Book = ({ id, image, bookName, onPress, edit, selected, navigation }) => {
   return (
     <View style={{ width: '30%', margin: 5 }}>
-      <View style={{ flex: 1 }}>
+      <TouchableOpacity
+        style={{ flex: 1 }}
+        onPress={() =>
+          !edit
+            ? navigation
+              ? navigation.navigate('FullPreview', {
+                  id,
+                })
+              : null
+            : null
+        }
+      >
         <Image
           source={image}
           style={{
@@ -144,7 +184,7 @@ const Book = ({ image, bookName, onPress, edit, selected }) => {
             )}
           </TouchableOpacity>
         ) : null}
-      </View>
+      </TouchableOpacity>
       <View style={{ flexGrow: 1000 }}>
         <Text
           style={{

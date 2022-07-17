@@ -32,27 +32,51 @@ import { styles, windowWidth, windowHeight } from '../../../styles'
 import { HrCommon } from '../../Components/LineComponent'
 import { MainButton } from '../../Components/ButtonComponents'
 import { CardMain } from '../../Components/CardComponents'
-import { useState } from 'react'
-
+import React, { useState } from 'react'
+import {
+  getAllBooksPage,
+  getPopularBooksPage,
+  getUpdatedBooksPage,
+  getChapterBooksPage,
+} from '../../../api/books'
 const Ranking = ({ navigation }) => {
-  const [indexPage, setIndexPage] = useState(0)
+  const [hottest, setHottestImage] = useState('')
+  const [popular, setPopularImage] = useState('')
+  const [updated, setUpdatedImage] = useState('')
+  const [chapters, setChaptersImage] = useState('')
   return (
     <ImageBackground source={main} style={[styles.bgimage]}>
       <ScrollView>
         <SelectTab
-          tabItems={['All', 'Weekly', 'Latest', 'Completed']}
+          tabItems={['All', 'Popular', 'Latest', 'Chapters']}
           makeCenter={true}
           topImages={[
-            <HeadImage key={1} image={sample} name="Hottest" />,
-            <HeadImage key={2} image={sample2} name="Weekly" />,
-            <HeadImage key={4} image={sample3} name="Latest" />,
-            <HeadImage key={3} image={sample1} name="Completed" />,
+            <HeadImage key={1} image={{ uri: hottest }} name="Hottest" />,
+            <HeadImage key={2} image={{ uri: popular }} name="Popular" />,
+            <HeadImage key={4} image={{ uri: updated }} name="Latest" />,
+            <HeadImage key={3} image={{ uri: chapters }} name="Chapters" />,
           ]}
         >
-          <Pages navigation={navigation} />
-          <Pages navigation={navigation} />
-          <Pages navigation={navigation} />
-          <Pages navigation={navigation} />
+          <Pages
+            navigation={navigation}
+            api={getAllBooksPage}
+            image={(v) => setHottestImage(v)}
+          />
+          <Pages
+            navigation={navigation}
+            api={getPopularBooksPage}
+            image={(v) => setPopularImage(v)}
+          />
+          <Pages
+            navigation={navigation}
+            api={getUpdatedBooksPage}
+            image={(v) => setUpdatedImage(v)}
+          />
+          <Pages
+            navigation={navigation}
+            api={getChapterBooksPage}
+            image={(v) => setChaptersImage(v)}
+          />
         </SelectTab>
         {/* <Swiper
           index={!swipe ? indexPage : null}
@@ -70,6 +94,7 @@ const Ranking = ({ navigation }) => {
 }
 
 const Books = ({
+  id,
   number,
   image,
   title,
@@ -79,21 +104,16 @@ const Books = ({
   noOfParts,
   description,
   navigation,
+  api,
 }) => {
   return (
     <CardMain
       touchable={true}
-      style={{ paddingBottom: 1, width: windowWidth - 12 }}
+      style={{ paddingBottom: 1, width: windowWidth - 10 }}
       onPress={() =>
         navigation
           ? navigation.navigate('FullPreview', {
-              image,
-              title,
-              author,
-              noOfRead,
-              noOfHeart,
-              noOfParts,
-              description,
+              id,
             })
           : null
       }
@@ -119,7 +139,7 @@ const Books = ({
 
         <Image
           source={image}
-          style={{ height: 143.4, width: 72, borderRadius: 5 }}
+          style={{ height: 140, marginBottom: 8, width: 72, borderRadius: 5 }}
         />
         <View style={{ padding: 8, flex: 1 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{title}</Text>
@@ -128,7 +148,7 @@ const Books = ({
             <View style={{ flexDirection: 'row', marginRight: 6 }}>
               <AntDesign name="eye" size={15} />
               <View style={{ marginLeft: 1 }}>
-                <Text style={{ fontSize: 11, fontWeight: 'bold' }}>Read</Text>
+                <Text style={{ fontSize: 11, fontWeight: 'bold' }}>Views</Text>
                 <Text style={{ fontWeight: 'bold' }}>{noOfRead}</Text>
               </View>
             </View>
@@ -166,22 +186,44 @@ const Books = ({
   )
 }
 
-const Pages = ({ index, navigation }) => {
+const Pages = ({ image, navigation, api }) => {
+  const [data, setData] = useState([])
+  React.useEffect(() => {
+    getData()
+  }, [])
+  const getData = async () => {
+    const data = await await api(0, 20)
+    image(data.length > 0 ? data[0].bookCoverImg : null)
+    setData(data)
+  }
   return (
     <View>
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((d) => (
-        <Books
-          image={sample}
-          navigation={navigation}
-          title={'True Beauty'}
-          number={d}
-          noOfHeart={30}
-          noOfRead={1000}
-          noOfParts={31}
-          author={'dahyun__'}
-          description={`Patrick “Pack” Walsh may not know exactly where he’s going in life, but he’s happy where he is. he’s going in life, but he’s happy where he isHe’s got a girlfriend who gets him. His single dad is hishe’s going in life, but he’s happy where he is`}
+      {data.length > 0 ? (
+        data.map((d, i) => (
+          <Books
+            id={d._id}
+            key={i}
+            image={{ uri: d.bookCoverImg }}
+            navigation={navigation}
+            title={d.bookName}
+            number={i + 1}
+            noOfHeart={d.likes}
+            noOfRead={d.views}
+            noOfParts={d.chapterNumber}
+            author={d.bookAuthor}
+            description={d.description}
+          />
+        ))
+      ) : (
+        <CardMain
+          touchable={true}
+          style={{
+            paddingBottom: 1,
+            width: windowWidth - 10,
+            backgroundColor: 'transparent',
+          }}
         />
-      ))}
+      )}
     </View>
   )
 }

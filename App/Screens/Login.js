@@ -14,7 +14,20 @@ import Zocial from 'react-native-vector-icons/Zocial'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { Checkbox } from '../Components/ButtonComponents'
 import { Hr } from '../Components/LineComponent'
-const Login = ({ navigation }) => {
+import { useState } from 'react'
+import { loginUser } from '../../api/users'
+import sha256 from 'crypto-js/sha256'
+const Login = ({ navigation, login }) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const userLogin = async () => {
+    const check = await loginUser(email, sha256(password).toString())
+    if (check === null) return
+    if (check) return login(true)
+    return navigation.navigate('Verify')
+  }
+
   return (
     <View style={{ ...styles.container, backgroundColor: '#D6DBE8', flex: 1 }}>
       <Image
@@ -84,7 +97,7 @@ const Login = ({ navigation }) => {
                   top: -2,
                 }}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setEmail(v)}
               />
             </View>
             <View style={styles.txtInput}>
@@ -105,7 +118,7 @@ const Login = ({ navigation }) => {
                   top: -2,
                 }}
                 editable={true}
-                onChangeText={(v) => console.log(v)}
+                onChangeText={(v) => setPassword(v)}
               />
             </View>
             <View
@@ -129,7 +142,7 @@ const Login = ({ navigation }) => {
             </View>
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={() => navigation.navigate('Main')}
+              onPress={async () => await userLogin()}
             >
               <Text
                 style={{
