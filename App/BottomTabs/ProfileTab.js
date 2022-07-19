@@ -7,21 +7,60 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Alert,
 } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import Header from './Header'
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { HrCommon } from '../Components/LineComponent'
 import { main, sample, topup, transaction, rewards, writer } from '../../images'
 import { styles } from '../../styles'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { CardMain } from '../Components/CardComponents'
-const ProfileTab = ({ navigation }) => {
+import { getProfile } from '../../api/users'
+import socket from '../../socket'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+const ProfileTab = ({ navigation, logout }) => {
+  const [data, setData] = useState({})
+  useFocusEffect(
+    React.useCallback(() => {
+      getData()
+    }, [])
+  )
+
+  const getData = async () => {
+    const data = await getProfile()
+    socket.connect()
+    socket.emit('getNotif', data._id)
+    socket.on('notification', (d) => console.log(d))
+
+    setData(data)
+  }
   return (
     <View style={{ flex: 1 }}>
-      <Header title={'My Profile'} />
+      <Header
+        title={'My Profile'}
+        rightButton={<Entypo name="log-out" size={25} />}
+        onPress={() =>
+          Alert.alert(null, 'Are you sure you want to logout?', [
+            {
+              text: 'Cancel',
+            },
+            {
+              text: 'OK',
+              onPress: async () => {
+                await AsyncStorage.removeItem('ACCESS')
+                await AsyncStorage.removeItem('REFRESH')
+                logout(false)
+              },
+            },
+          ])
+        }
+      />
       <HrCommon />
       <ImageBackground source={main} style={styles.bgimage}>
         <ScrollView style={{ paddingVertical: 10 }}>
@@ -43,25 +82,39 @@ const ProfileTab = ({ navigation }) => {
               }}
             >
               <View style={{ marginRight: 15 }}>
-                <Image
-                  source={sample}
-                  style={{
-                    borderWidth: 1,
-                    borderColor: 'white',
-                    borderRadius: 100,
-                    height: 75,
-                    width: 75,
-                  }}
-                />
+                {data.img ? (
+                  <Image
+                    source={{ uri: data.img }}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: 'white',
+                      borderRadius: 100,
+                      height: 75,
+                      width: 75,
+                    }}
+                  />
+                ) : (
+                  <FontAwesome5
+                    name="book-reader"
+                    color={'#935ADC'}
+                    size={42.5}
+                    style={{
+                      padding: 15,
+                      borderWidth: 1,
+                      borderColor: 'white',
+                      borderRadius: 100,
+                    }}
+                  />
+                )}
               </View>
               <View>
                 <Text
                   style={{ fontSize: 21, fontWeight: 'bold' }}
                   numberOfLines={1}
                 >
-                  Vincent Llanto
+                  {data.name}
                 </Text>
-                <Text style={{ fontSize: 13 }}>ID 123432</Text>
+                <Text style={{ fontSize: 13 }}>ID {data._id}</Text>
               </View>
             </View>
           </View>

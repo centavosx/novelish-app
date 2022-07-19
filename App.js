@@ -40,7 +40,6 @@ export default function App() {
   React.useEffect(() => {
     checkLogin()
   }, [])
-
   const checkLogin = async () => {
     try {
       const ACCESS_TOKEN = await AsyncStorage.getItem('ACCESS')
@@ -52,6 +51,7 @@ export default function App() {
             tkn: REFRESH_TOKEN,
           },
         })
+        console.log(resp.data)
         await AsyncStorage.setItem('ACCESS', resp.data.tkn)
         await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
         return setLoggedIn(true)
@@ -118,7 +118,7 @@ export default function App() {
               name="Main"
               options={{ headerShown: false }}
             >
-              {(props) => <Main {...props} />}
+              {(props) => <Main {...props} setLogin={(v) => setLoggedIn(v)} />}
             </NavigationStack.Screen>
             <NavigationStack.Screen
               name="FullPreview"

@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Platform,
 } from 'react-native'
 import {
   background,
@@ -25,7 +26,47 @@ import {
 import { styles } from '../../styles'
 import Feather from 'react-native-vector-icons/Feather'
 import { LinearGradient } from 'expo-linear-gradient'
+import { AdComponent } from '../Components/ButtonComponents'
+import { getRewards, watchReward, postRewards } from '../../api/rewards'
+import React, { useState } from 'react'
+
 const Rewards = ({ navigation }) => {
+  const [data, setData] = useState({ datesAttended: [], attempt: 3 })
+  const [loading, setLoading] = useState(false)
+  const [watched, setWatched] = useState(false)
+  const [clicked, setClicked] = useState(false)
+  const [clicked2, setClicked2] = useState(false)
+  const get = async () => {
+    setLoading(true)
+    const data = await getRewards()
+    setData(data)
+    setLoading(false)
+  }
+
+  React.useEffect(() => {
+    get()
+  }, [])
+
+  const watch = async () => {
+    setClicked(true)
+    const d = await watchReward()
+    const newData = { ...data }
+    newData.coin = d.coin
+    newData.attempt = d.attempt
+    setData(newData)
+    setClicked(false)
+  }
+
+  const post = async () => {
+    setClicked2(true)
+    const d = await postRewards()
+    const newData = { ...d }
+    console.log(newData)
+    newData.coin = data.coin
+    setData(newData)
+    setClicked2(false)
+  }
+
   return (
     <ImageBackground source={background} style={styles.bgimage}>
       <ScrollView style={{ paddingVertical: 40 }}>
@@ -73,7 +114,7 @@ const Rewards = ({ navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                231
+                {data.coin}
               </Text>
             </View>
           </View>
@@ -123,7 +164,6 @@ const Rewards = ({ navigation }) => {
                 style={{
                   position: 'absolute',
                   padding: 5,
-
                   width: '100%',
                   height: '100%',
                 }}
@@ -131,19 +171,54 @@ const Rewards = ({ navigation }) => {
                 <View
                   style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
                 >
-                  <Card r_img={r1} color="#F974A4" width={'33%'} />
-                  <Card r_img={r2} color="#935ADC" width={'33%'} />
-                  <Card r_img={r3} color="#9473E8" width={'33%'} />
+                  <Card
+                    r_img={r1}
+                    color={data.datesAttended.includes(0) ? 'grey' : '#F974A4'}
+                    width={'33%'}
+                    num={1}
+                  />
+                  <Card
+                    r_img={r2}
+                    color={data.datesAttended.includes(1) ? 'grey' : '#935ADC'}
+                    width={'33%'}
+                    num={2}
+                  />
+                  <Card
+                    r_img={r3}
+                    color={data.datesAttended.includes(2) ? 'grey' : '#9473E8'}
+                    width={'33%'}
+                    num={3}
+                  />
                 </View>
                 <View
                   style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
                 >
-                  <Card r_img={r4} color="#9473E8" width={'33%'} />
-                  <Card r_img={r3} color="#935ADC" width={'33%'} />
-                  <Card r_img={r2} color="#F974A4" width={'33%'} />
+                  <Card
+                    r_img={r4}
+                    color={data.datesAttended.includes(3) ? 'grey' : '#9473E8'}
+                    width={'33%'}
+                    num={4}
+                  />
+                  <Card
+                    r_img={r3}
+                    color={data.datesAttended.includes(4) ? 'grey' : '#935ADC'}
+                    width={'33%'}
+                    num={5}
+                  />
+                  <Card
+                    r_img={r2}
+                    color={data.datesAttended.includes(5) ? 'grey' : '#F974A4'}
+                    width={'33%'}
+                    num={6}
+                  />
                 </View>
                 <View style={{ flex: 1, padding: 5 }}>
-                  <BigCard r_img={r5} color="#FFD700" width={'100%'} />
+                  <BigCard
+                    r_img={r5}
+                    color={data.datesAttended.includes(6) ? 'grey' : '#FFD700'}
+                    width={'100%'}
+                    num={7}
+                  />
                 </View>
               </View>
             </View>
@@ -165,38 +240,51 @@ const Rewards = ({ navigation }) => {
             alignItems: 'center',
           }}
         >
-          <TouchableOpacity style={{ width: 180 }}>
-            <LinearGradient
-              colors={['#FF749A', '#FF89A9', 'pink']}
-              style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: 10,
-              }}
-              start={{ x: 0, y: 0.41 }}
-              end={{ x: 1, y: 0.8 }}
-            />
-            <View
-              style={{
-                position: 'absolute',
-                height: '100%',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-              }}
+          {!loading ? (
+            <TouchableOpacity
+              style={{ width: 180 }}
+              onPress={async () =>
+                !clicked2 ? (!data.loggedIn ? await post() : null) : null
+              }
             >
-              <Text
-                style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}
+              <LinearGradient
+                colors={
+                  data.loggedIn
+                    ? ['grey', 'grey']
+                    : ['#FF749A', '#FF89A9', 'pink']
+                }
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 10,
+                }}
+                start={{ x: 0, y: 0.41 }}
+                end={{ x: 1, y: 0.8 }}
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                  height: '100%',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                }}
               >
-                Check In
-              </Text>
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}
+                >
+                  {data.loggedIn ? 'Checked In' : 'Check In'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <Text style={{ textAlign: 'center' }}>Loading rewards...</Text>
+          )}
         </View>
         <View
           style={{
-            height: 400,
+            height: 180,
             width: '100%',
             backgroundColor: 'rgba(0,0,0,0.3)',
             borderRadius: 20,
@@ -243,10 +331,21 @@ const Rewards = ({ navigation }) => {
                   height: '100%',
                 }}
               >
-                <CardEarn num={3} />
+                <AdComponent
+                  sendData={async (v) => {
+                    if (v) {
+                      setWatched(true)
+                      return -1
+                    }
+                    if (clicked) return -1
+                    await watch()
+                    setWatched(false)
 
-                <CardEarn num={3} />
-                <CardEarn num={3} />
+                    return -1
+                  }}
+                  num={data.attempt}
+                  claim={watched}
+                />
               </View>
             </View>
             <View style={{ paddingVertical: 2, paddingHorizontal: 5 }}>
@@ -305,84 +404,12 @@ const Rewards = ({ navigation }) => {
     </ImageBackground>
   )
 }
-const CardEarn = ({ num }) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-
-        margin: 5,
-        borderRadius: 10,
-      }}
-    >
-      <LinearGradient
-        colors={['#AB8CFA', '#A487EF', '#939DFF']}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: 10,
-          position: 'absolute',
-        }}
-        start={{ x: 0, y: 0.41 }}
-        end={{ x: 1, y: 0.8 }}
-      />
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          flexDirection: 'row',
-          paddingHorizontal: 5,
-        }}
-      >
-        <Image source={video} style={{ width: 80, height: 49 }} />
-        <View style={{ flex: 1, marginRight: 4 }}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Daily Ad</Text>
-          <Text numberOfLines={2} style={{ fontSize: 12 }}>
-            Watch up to {num} ads daily to get rewards
-          </Text>
-        </View>
-        <TouchableOpacity style={{ width: 80, height: 40 }}>
-          <LinearGradient
-            colors={['#FF749A', '#FF89A9', 'pink']}
-            style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: 10,
-            }}
-            start={{ x: 0, y: 0.41 }}
-            end={{ x: 1, y: 0.8 }}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-                color: 'white',
-              }}
-            >
-              Watch
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
-}
 const Circle = ({ img }) => {
   return (
     <Image source={img} style={{ height: 11, width: 11, marginVertical: 5 }} />
   )
 }
-const Card = ({ color, r_img, width }) => {
+const Card = ({ color, r_img, width, num }) => {
   return (
     <View
       style={{
@@ -414,7 +441,7 @@ const Card = ({ color, r_img, width }) => {
             color: 'white',
           }}
         >
-          Day 1
+          Day {num}
         </Text>
         <View
           style={{
@@ -459,7 +486,7 @@ const Card = ({ color, r_img, width }) => {
     </View>
   )
 }
-const BigCard = ({ color, r_img, width }) => {
+const BigCard = ({ color, r_img, width, num }) => {
   return (
     <View
       style={{
@@ -513,7 +540,7 @@ const BigCard = ({ color, r_img, width }) => {
               alignSelf: 'flex-start',
             }}
           >
-            Day 1
+            Day {num}
           </Text>
           <Text
             style={{

@@ -30,7 +30,18 @@ import Fontisto from 'react-native-vector-icons/Fontisto'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { LinearGradient } from 'expo-linear-gradient'
+import { getTransactions } from '../../api/transactions'
+import { format } from './Comments'
+import React, { useState } from 'react'
 const Transactions = ({ navigation }) => {
+  const [data, setData] = useState({ coin: 0, trans: [] })
+  React.useEffect(() => {
+    get()
+  }, [])
+  const get = async () => {
+    setData(await getTransactions(0, 10))
+  }
+
   return (
     <ImageBackground source={background} style={styles.bgimage}>
       <ScrollView style={{ paddingTop: 40 }}>
@@ -78,7 +89,7 @@ const Transactions = ({ navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                231
+                {data.coin}
               </Text>
             </View>
           </View>
@@ -125,17 +136,17 @@ const Transactions = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <View style={{ padding: 5 }}>
-              {Array(30)
-                .fill(null)
-                .map((_, i) => (
-                  <Transact
-                    what="Cash In"
-                    key={i}
-                    icon="cash"
-                    coin={3000}
-                    result={'Success'}
-                  />
-                ))}
+              {data.trans.map((d, i) => (
+                <Transact
+                  what={d.paymentMethod}
+                  refId={d.refId}
+                  key={i}
+                  icon="cash"
+                  coin={d.coin}
+                  result={'Success'}
+                  date={d.dateCreated}
+                />
+              ))}
             </View>
           </View>
         </View>
@@ -144,7 +155,7 @@ const Transactions = ({ navigation }) => {
   )
 }
 
-export const Transact = ({ icon, result, coin, what }) => {
+export const Transact = ({ icon, result, coin, what, date, refId }) => {
   return (
     <View style={{ margin: 5, flexDirection: 'row' }}>
       <View
@@ -170,7 +181,20 @@ export const Transact = ({ icon, result, coin, what }) => {
           />
         ) : null}
       </View>
-      <Text style={{ fontWeight: 'bold', flex: 1 }}>{what}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontWeight: 'bold', flex: 1 }} numberOfLines={1}>
+          {what.toUpperCase()}{' '}
+        </Text>
+        <Text
+          style={{ fontSize: 11, color: 'grey', flex: 1 }}
+          numberOfLines={1}
+        >
+          REF: {refId}
+        </Text>
+        <Text style={{ fontSize: 10 }}>
+          {new Date(date).toDateString()} {format(new Date(date))}
+        </Text>
+      </View>
       <View>
         <Text style={{ fontWeight: 'bold' }}>+{coin} coins</Text>
         <Text

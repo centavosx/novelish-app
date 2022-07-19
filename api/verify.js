@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { URL } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Alert } from 'react-native'
 
 export const verifyUser = async (OTP) => {
   try {
@@ -15,7 +16,7 @@ export const verifyUser = async (OTP) => {
         },
       }
     )
-    if (resp.data.message) alert(resp.data.message)
+    if (resp.data.message) Alert.alert(null, resp.data.message)
     if (resp.data.rtkn && resp.data.loggedin)
       await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
     if (resp.data.tkn && resp.data.loggedin)
@@ -23,7 +24,7 @@ export const verifyUser = async (OTP) => {
     return resp.data.loggedin ? true : false
   } catch (e) {
     if (e.response.data.message && e.response.status !== 500)
-      alert(e.response.data.message)
+      Alert.alert(null, e.response.data.message)
     return null
   }
 }
@@ -41,11 +42,11 @@ export const resendCode = async () => {
         },
       }
     )
-    if (resp.data.message) alert(resp.data.message)
+    if (resp.data.message) Alert.alert(null, resp.data.message)
     return resp.data.sent
   } catch (e) {
     if (e.response.data.message && e.response.status !== 500)
-      alert(e.response.data.message)
+      Alert.alert(null, e.response.data.message)
     return null
   }
 }

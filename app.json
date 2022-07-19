@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "Novelish",
-    "slug": "Novelish",
+    "slug": "test",
+    "owner": "mpluzpluz",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,12 +17,20 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.novelishest.app",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-1289049385387322~5708856511"
+      }
     },
     "android": {
+      "bundleIdentifier": "com.novelishest.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-1289049385387322~8091477278"
       }
     },
     "web": {

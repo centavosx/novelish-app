@@ -22,24 +22,8 @@ import { HrCommon } from '../Components/LineComponent'
 import Feather from 'react-native-vector-icons/Feather'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SelectTab } from '../Components/SliderComponents'
-
-import {
-  main,
-  sample,
-  sample1,
-  sample2,
-  sample3,
-  sample4,
-  darkBottom,
-  sample5,
-  darkTop,
-  fire,
-  jenny,
-  whiteShadow,
-  coin,
-  image,
-  logo,
-} from '../../images'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import { main, sample, jenny } from '../../images'
 import { styles, windowWidth, windowHeight } from '../../styles'
 import { Circle } from '../Components/LineComponent'
 import { MainButton } from '../Components/ButtonComponents'
@@ -48,9 +32,65 @@ import { CardMain } from '../Components/CardComponents'
 import Header from '../BottomTabs/Header'
 import React from 'react'
 
+import {
+  getComments,
+  getChapterComments,
+  getChapterCommentsReply,
+  getCommentsReplies,
+  addChapterComment,
+  addBookComment,
+  addCommentChapterReply,
+  addCommentReply,
+} from '../../api/comments'
+export const format = (date) => {
+  var hours = date.getHours()
+  var minutes = date.getMinutes()
+  var ampm = hours >= 12 ? 'pm' : 'am'
+  hours = hours % 12
+  hours = hours ? hours : 12 // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  var strTime = hours + ':' + minutes + ' ' + ampm
+  return strTime
+}
 const Comments = ({ navigation, route }) => {
   const [addComment, setAddComment] = useState(false)
-  const [openComment, setOpenComment] = useState({ open: false })
+  const [openComment, setOpenComment] = useState({ id: null, open: false })
+  const [data, setData] = useState([])
+  React.useEffect(() => {
+    getCommentData()
+  }, [])
+  const getCommentData = async () => {
+    let data = []
+    if (route.params.type === 'chapters') {
+      const resp = await getChapterComments(
+        route.params.bookId,
+        route.params.id
+      )
+      data = resp.comments
+    } else if (route.params.type === 'books') {
+      const resp = await getComments(route.params.bookId)
+      data = resp.comments
+    }
+    setData(data)
+  }
+
+  const addAComment = async (rating, message) => {
+    let added = {}
+    if (route.params.type === 'chapters') {
+      added = await addChapterComment(
+        route.params.bookId,
+        route.params.id,
+        rating,
+        message
+      )
+    } else if (route.params.type === 'books') {
+      added = await addBookComment(route.params.bookId, rating, message)
+    }
+    if (added.success) {
+      setData(added.comms)
+    }
+  }
+
   return (
     <ImageBackground source={main} style={{ flex: 1 }}>
       <View
@@ -89,7 +129,7 @@ const Comments = ({ navigation, route }) => {
       <HrCommon />
       <CardMain style={{ backgroundColor: 'rgba(252,252,252,0.8)', flex: 1 }}>
         <Text style={{ color: '#FF69BB', fontWeight: 'bold' }}>
-          Reviews (23203)
+          Reviews ({data.length})
         </Text>
         <View style={{ flexDirection: 'row', width: '100%' }}>
           <TouchableOpacity
@@ -113,86 +153,20 @@ const Comments = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <ScrollView style={{ padding: 10, flex: 1 }}>
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
-          <UserReply
-            image={jenny}
-            user={'suzybae'}
-            star={3}
-            heart={50}
-            message={
-              'I really like all of your works! Thumbs Up!!! Hope you’ll make stories about werewolf too'
-            }
-            onPress={(v) => setOpenComment({ ...v })}
-          />
+          {data.map((d, i) => (
+            <UserReply
+              key={d._id}
+              image={{ uri: d.img }}
+              user={d.user}
+              star={d.rating}
+              heart={d.totalLikes}
+              likedByYou={d.liked}
+              totalReplies={d.totalReplies}
+              message={d.message}
+              dateCreated={d.dateCreated}
+              onPress={(v) => setOpenComment({ ...v, id: d._id })}
+            />
+          ))}
         </ScrollView>
       </CardMain>
       {addComment ? (
@@ -201,27 +175,57 @@ const Comments = ({ navigation, route }) => {
           chapter={'Chapter 13'}
           chapterName={'Meet'}
           title={'True'}
+          addFunction={addAComment}
           onPressOut={() => setAddComment(false)}
         />
       ) : null}
       {openComment.open ? (
         <CommentDetail
+          id={openComment.id}
+          params={route.params}
           onPressOut={() => setOpenComment({ ...openComment, open: false })}
         />
       ) : null}
     </ImageBackground>
   )
 }
-const UserReply = ({ image, user, message, star, heart, onPress }) => {
+const UserReply = ({
+  image,
+  user,
+  message,
+  star,
+  heart,
+  onPress,
+  likedByYou,
+  totalReplies,
+  dateCreated,
+}) => {
   return (
     <View style={{ flexDirection: 'row', marginVertical: 5 }}>
       <View style={{ marginRight: 8 }}>
-        <Image
-          source={image}
-          style={{ ...styles.authorIconImage, height: 40, width: 40 }}
-        />
+        {image.uri ? (
+          <Image
+            source={image}
+            style={{ ...styles.authorIconImage, height: 40, width: 40 }}
+          />
+        ) : (
+          <FontAwesome5
+            name="book-reader"
+            color={'#935ADC'}
+            size={27}
+            style={{
+              paddingLeft: 7,
+              paddingRight: 3,
+              paddingTop: 5,
+              paddingBottom: 5,
+              borderRadius: 100,
+              borderColor: '#FC5180',
+              borderWidth: 2,
+            }}
+          />
+        )}
       </View>
-      <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
+      <View style={{ flex: 1, flexWrap: 'wrap' }}>
         <Text
           style={{
             color: '#FC5180',
@@ -234,7 +238,10 @@ const UserReply = ({ image, user, message, star, heart, onPress }) => {
         </Text>
         <View>
           <View style={{ flexDirection: 'row' }}>{generateStar(star)}</View>
-
+          <Text style={{ fontSize: 10, color: 'grey' }}>
+            {dateCreated ? new Date(dateCreated).toDateString() : null}{' '}
+            {dateCreated ? format(new Date(dateCreated)) : null}
+          </Text>
           <Text style={{ fontSize: 12 }}>{message}</Text>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <TouchableOpacity
@@ -246,15 +253,17 @@ const UserReply = ({ image, user, message, star, heart, onPress }) => {
                 size={13}
                 style={{ marginRight: 3 }}
               />
-              <Text style={{ fontSize: 10 }}>Reply</Text>
+              <Text style={{ fontSize: 10 }}>Reply ({totalReplies})</Text>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row' }}>
-              <AntDesign
-                name="heart"
-                color={'red'}
-                size={13}
-                style={{ marginRight: 3 }}
-              />
+              <TouchableOpacity>
+                <AntDesign
+                  name="heart"
+                  color={likedByYou ? 'red' : 'black'}
+                  size={13}
+                  style={{ marginRight: 3 }}
+                />
+              </TouchableOpacity>
               <Text style={{ fontSize: 10 }}>{heart}</Text>
             </View>
           </View>
@@ -264,15 +273,17 @@ const UserReply = ({ image, user, message, star, heart, onPress }) => {
   )
 }
 
-const CommentAdd = ({
-  image,
-  title,
-  chapter,
-  chapterName,
-  noOfCoin,
-  onPressOut,
-}) => {
+const CommentAdd = ({ image, title, chapter, onPressOut, addFunction }) => {
   const [rating, setRating] = useState(0)
+  const [message, setMessage] = useState('')
+  const [addWait, setAddWait] = useState(false)
+  const add = async () => {
+    setAddWait(true)
+    await addFunction(rating, message)
+    if (onPressOut) onPressOut()
+    setMessage('')
+    setAddWait(false)
+  }
   return (
     <View
       style={{
@@ -285,7 +296,7 @@ const CommentAdd = ({
       <TouchableOpacity
         style={{ flex: 1 }}
         onPress={() => (onPressOut ? onPressOut() : null)}
-      ></TouchableOpacity>
+      />
       <View
         style={{
           bottom: 1,
@@ -429,6 +440,8 @@ const CommentAdd = ({
                 flex: 1,
                 marginRight: 5,
               }}
+              value={message}
+              onChangeText={(v) => setMessage(v)}
             />
           </View>
           <View
@@ -439,8 +452,20 @@ const CommentAdd = ({
               paddingBottom: 20,
             }}
           >
-            <Text style={{ flex: 1 }}>0/200</Text>
-            <TouchableOpacity>
+            <Text style={{ flex: 1 }}>{message.length}/200</Text>
+            <TouchableOpacity
+              onPress={async () =>
+                !addWait
+                  ? rating > 0 && rating < 6
+                    ? message.length > 0
+                      ? message.length <= 200
+                        ? await add()
+                        : alert('Too much characters')
+                      : alert('Please add a message')
+                    : alert('Please rate!')
+                  : null
+              }
+            >
               <FontAwesome name="send" color={'#FC51A3'} size={23} />
             </TouchableOpacity>
           </View>
@@ -450,7 +475,49 @@ const CommentAdd = ({
   )
 }
 
-const CommentDetail = ({ onPressOut }) => {
+const CommentDetail = ({ onPressOut, params, id }) => {
+  const [data, setData] = useState({ replies: [] })
+  const [loading, setLoading] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [message, setMessage] = useState('')
+  React.useEffect(() => {
+    getCommentData()
+  }, [])
+  const getCommentData = async () => {
+    setLoading(true)
+    let data = { replies: [] }
+    if (params.type === 'chapters') {
+      const resp = await getChapterCommentsReply(params.bookId, params.id, id)
+      data = resp
+    } else if (params.type === 'books') {
+      const resp = await getCommentsReplies(params.bookId, id)
+      data = resp
+    }
+    setData(data)
+    setLoading(false)
+  }
+
+  const addReply = async () => {
+    setSending(true)
+    let added = {}
+    if (params.type === 'chapters') {
+      added = await addCommentChapterReply(
+        params.bookId,
+        params.id,
+        id,
+        message
+      )
+    } else if (params.type === 'books') {
+      added = await addCommentReply(params.bookId, id, message)
+    }
+
+    if (added.success) {
+      setData({ ...data, replies: added.comms })
+      setMessage('')
+    }
+    setSending(false)
+  }
+
   return (
     <View
       style={{
@@ -497,6 +564,7 @@ const CommentDetail = ({ onPressOut }) => {
             <AntDesign name="closecircleo" size={25} />
           </TouchableOpacity>
         </View>
+
         <ScrollView
           style={{
             flex: 1,
@@ -505,87 +573,95 @@ const CommentDetail = ({ onPressOut }) => {
             paddingBottom: 50,
           }}
         >
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ marginRight: 8 }}>
-              <Image
-                source={jenny}
-                style={{ ...styles.authorIconImage, height: 40, width: 40 }}
-              />
+          {loading ? (
+            <View>
+              <Text>Loading replies...</Text>
             </View>
-            <View style={{ marginBottom: 20 }}>
-              <Text
-                style={{
-                  color: '#FC5180',
-                  textDecorationLine: 'underline',
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                }}
-              >
-                dahyun_
-              </Text>
-              <View style={{ flexDirection: 'row' }}>{generateStar(5)}</View>
-              <Text style={{ fontSize: 12 }}>
-                bitin huhu kiLan ang next update poh? gaganda po ng stories nyo,
-                pero pinakafavorite ko i2 hehe
-              </Text>
-              <View
-                style={{ flexDirection: 'row', marginTop: 5, marginBottom: 5 }}
-              >
-                <View style={{ flexDirection: 'row', marginRight: 10 }}>
-                  <MaterialCommunityIcons
-                    name="message-reply-text-outline"
-                    size={13}
-                    style={{ marginRight: 3 }}
+          ) : (
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ marginRight: 8 }}>
+                {data.img ? (
+                  <Image
+                    source={{ uri: data.img }}
+                    style={{ ...styles.authorIconImage, height: 40, width: 40 }}
                   />
-                  <Text style={{ fontSize: 10 }}>Reply</Text>
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                  <AntDesign
-                    name="heart"
-                    color={'red'}
-                    size={13}
-                    style={{ marginRight: 3 }}
+                ) : (
+                  <FontAwesome5
+                    name="book-reader"
+                    color={'#935ADC'}
+                    size={27}
+                    style={{
+                      paddingLeft: 7,
+                      paddingRight: 3,
+                      paddingTop: 5,
+                      paddingBottom: 5,
+                      borderRadius: 100,
+                      borderColor: '#FC5180',
+                      borderWidth: 2,
+                    }}
                   />
-                  <Text style={{ fontSize: 10 }}>{5}</Text>
-                </View>
+                )}
               </View>
-              <CommentReply
-                user={'dahyun'}
-                image={jenny}
-                message={
-                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
-                }
-              />
-              <CommentReply
-                user={'dahyun'}
-                image={jenny}
-                message={
-                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
-                }
-              />
-              <CommentReply
-                user={'dahyun'}
-                image={jenny}
-                message={
-                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
-                }
-              />
-              <CommentReply
-                user={'dahyun'}
-                image={jenny}
-                message={
-                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
-                }
-              />
-              <CommentReply
-                user={'dahyun'}
-                image={jenny}
-                message={
-                  'bitin huhu kiLan ang next update poh? gaganda po ng stories nyo, pero pinakafavorite ko i2 hehe'
-                }
-              />
+              <View style={{ marginBottom: 20, flex: 1 }}>
+                <Text
+                  style={{
+                    color: '#FC5180',
+                    textDecorationLine: 'underline',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}
+                >
+                  {data.user}
+                </Text>
+
+                <View style={{ flexDirection: 'row' }}>
+                  {generateStar(data.rating)}
+                </View>
+                <Text style={{ color: 'grey', fontSize: 10 }}>
+                  {data?.dateCreated
+                    ? new Date(data.dateCreated).toLocaleDateString()
+                    : null}{' '}
+                  {data.dateCreated ? format(new Date(data.dateCreated)) : null}
+                </Text>
+                <Text style={{ fontSize: 12, flex: 1 }}>{data.message}</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 5,
+                    marginBottom: 5,
+                    width: '100%',
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                    <MaterialCommunityIcons
+                      name="message-reply-text-outline"
+                      size={13}
+                      style={{ marginRight: 3 }}
+                    />
+                    <Text style={{ fontSize: 10 }}>Reply</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <AntDesign
+                      name="heart"
+                      color={data.liked ? 'red' : 'black'}
+                      size={13}
+                      style={{ marginRight: 3 }}
+                    />
+                    <Text style={{ fontSize: 10 }}>{data.totalLikes}</Text>
+                  </View>
+                </View>
+                {data.replies.map((d) => (
+                  <CommentReply
+                    key={d._id}
+                    user={d.user}
+                    image={{ uri: d.img }}
+                    message={d.message}
+                    dateCreated={d.dateCreated}
+                  />
+                ))}
+              </View>
             </View>
-          </View>
+          )}
         </ScrollView>
         <View
           style={{ flexDirection: 'row', width: '100%', paddingHorizontal: 10 }}
@@ -605,8 +681,13 @@ const CommentDetail = ({ onPressOut }) => {
               maxHeight: 150,
               flex: 1,
             }}
+            value={message}
+            onChangeText={(v) => setMessage(v)}
           />
-          <TouchableOpacity style={{ alignSelf: 'center' }}>
+          <TouchableOpacity
+            style={{ alignSelf: 'center' }}
+            onPress={async () => (!sending ? await addReply() : null)}
+          >
             <FontAwesome name="send" color={'#FC51A3'} size={23} />
           </TouchableOpacity>
         </View>
@@ -615,14 +696,31 @@ const CommentDetail = ({ onPressOut }) => {
   )
 }
 
-const CommentReply = ({ image, user, message }) => {
+const CommentReply = ({ image, user, message, dateCreated }) => {
   return (
     <View style={{ flexDirection: 'row', width: '100%' }}>
       <View style={{ marginRight: 8 }}>
-        <Image
-          source={image}
-          style={{ ...styles.authorIconImage, height: 32, width: 32 }}
-        />
+        {image.uri ? (
+          <Image
+            source={image}
+            style={{ ...styles.authorIconImage, height: 32, width: 32 }}
+          />
+        ) : (
+          <FontAwesome5
+            name="book-reader"
+            color={'#935ADC'}
+            size={15}
+            style={{
+              paddingLeft: 7,
+              paddingRight: 3,
+              paddingTop: 6,
+              paddingBottom: 4,
+              borderRadius: 100,
+              borderColor: '#FC5180',
+              borderWidth: 2,
+            }}
+          />
+        )}
       </View>
       <View style={{ flex: 1 }}>
         <Text
@@ -634,6 +732,10 @@ const CommentReply = ({ image, user, message }) => {
           }}
         >
           {user}
+        </Text>
+        <Text style={{ fontSize: 10, color: 'grey' }}>
+          {dateCreated ? new Date(dateCreated).toLocaleDateString() : null}{' '}
+          {dateCreated ? format(new Date(dateCreated)) : null}
         </Text>
         <Text style={{ fontSize: 12, flex: 1 }}>{message}</Text>
       </View>

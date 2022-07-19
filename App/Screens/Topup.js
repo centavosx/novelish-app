@@ -7,7 +7,11 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Modal,
 } from 'react-native'
+
+import { WebView } from 'react-native-webview'
+
 import {
   background,
   coin,
@@ -27,9 +31,54 @@ import {
 import { styles } from '../../styles'
 import Feather from 'react-native-vector-icons/Feather'
 import { LinearGradient } from 'expo-linear-gradient'
+import React, { useState } from 'react'
+import { getCoins, addCoin } from '../../api/transactions'
 const Topup = ({ navigation }) => {
+  const [data, setData] = useState({ coins: [{}, {}, {}, {}, {}, {}] })
+  const [openPaypal, setOpenPaypal] = useState({
+    open: false,
+    url: null,
+  })
+  React.useEffect(() => {
+    get()
+  }, [])
+  const get = async () => {
+    setData(await getCoins())
+    setOpenPaypal({ open: false, url: null })
+  }
+  const add = async (name) => {
+    const url = await addCoin(name)
+    if (url) setOpenPaypal({ open: true, url })
+  }
+
   return (
     <ImageBackground source={background} style={styles.bgimage}>
+      <Modal
+        visible={openPaypal.open}
+        onRequestClose={() => setOpenPaypal({ open: false, url: null })}
+      >
+        <TouchableOpacity
+          onPress={() => setOpenPaypal({ open: false, url: null })}
+          style={{
+            padding: 5,
+            margin: 5,
+            borderWidth: 0.5,
+            width: 48,
+            borderRadius: 8,
+          }}
+        >
+          <Text style={{ fontSize: 16 }}>Back</Text>
+        </TouchableOpacity>
+        <WebView
+          source={{ uri: openPaypal.url }}
+          startInLoadingState={true}
+          injectedJavaScript={'document.f1.submit()'}
+          onNavigationStateChange={async (v) =>
+            v.title === 'Successful' ? await get() : null
+          }
+          containerStyle={{ marginTop: 20, width: '100%', height: '100%' }}
+        />
+      </Modal>
       <ScrollView style={{ paddingTop: 40 }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -75,7 +124,7 @@ const Topup = ({ navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                231
+                {data.coin}
               </Text>
             </View>
           </View>
@@ -124,55 +173,67 @@ const Topup = ({ navigation }) => {
                   style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
                 >
                   <Card
+                    name={data.coins[0].name}
                     r_img={five_dollars}
                     color="#F974A4"
                     width={'33%'}
-                    coins={500}
-                    price={4.99}
+                    coins={data.coins[0].coin}
+                    price={data.coins[0].price}
+                    onPress={async () => await add(data.coins[0].name)}
                   />
                   <Card
+                    name={data.coins[1].name}
                     r_img={ten_dollars}
                     color="#935ADC"
                     width={'33%'}
-                    coins={1000}
-                    price={9.99}
-                    freeCoins={150}
+                    coins={data.coins[1].coin}
+                    price={data.coins[1].price}
+                    freeCoins={data.coins[1].bonusCoin}
+                    onPress={async () => await add(data.coins[1].name)}
                   />
                   <Card
+                    name={data.coins[2].name}
                     r_img={twenty_dollars}
                     color="#9473E8"
                     width={'33%'}
-                    coins={2000}
-                    price={19.99}
-                    freeCoins={800}
+                    coins={data.coins[2].coin}
+                    price={data.coins[2].price}
+                    freeCoins={data.coins[2].bonusCoin}
+                    onPress={async () => await add(data.coins[2].name)}
                   />
                 </View>
                 <View
                   style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
                 >
                   <Card
+                    name={data.coins[3].name}
                     r_img={thirty_dollars}
                     color="#9473E8"
                     width={'33%'}
-                    coins={3000}
-                    price={29.99}
-                    freeCoins={1500}
+                    coins={data.coins[3].coin}
+                    price={data.coins[3].price}
+                    freeCoins={data.coins[3].bonusCoin}
+                    onPress={async () => await add(data.coins[3].name)}
                   />
                   <Card
+                    name={data.coins[4].name}
                     r_img={fifty_dollars}
                     color="#935ADC"
                     width={'33%'}
-                    coins={5000}
-                    price={49.99}
-                    freeCoins={3000}
+                    coins={data.coins[4].coin}
+                    price={data.coins[4].price}
+                    freeCoins={data.coins[4].bonusCoin}
+                    onPress={async () => await add(data.coins[4].name)}
                   />
                   <Card
+                    name={data.coins[5].name}
                     r_img={hundred_dollars}
                     color="#F974A4"
                     width={'33%'}
-                    coins={10000}
-                    price={99.99}
-                    freeCoins={8000}
+                    coins={data.coins[5].coin}
+                    price={data.coins[5].price}
+                    freeCoins={data.coins[5].bonusCoin}
+                    onPress={async () => await add(data.coins[5].name)}
                   />
                 </View>
               </View>
@@ -316,7 +377,7 @@ const Topup = ({ navigation }) => {
   )
 }
 
-const Card = ({ color, r_img, width, freeCoins, coins, price }) => {
+const Card = ({ color, r_img, width, freeCoins, coins, price, onPress }) => {
   return (
     <View
       style={{
@@ -393,7 +454,7 @@ const Card = ({ color, r_img, width, freeCoins, coins, price }) => {
             {freeCoins ? 'Free coins: +' + freeCoins : null}
           </Text>
           <View style={{ height: 35, padding: 5 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => (onPress ? onPress() : null)}>
               <LinearGradient
                 colors={['#FF749A', '#FF89A9', 'pink']}
                 style={{

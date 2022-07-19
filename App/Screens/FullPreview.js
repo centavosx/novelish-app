@@ -10,6 +10,8 @@ import {
   ScrollView,
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useFocusEffect } from '@react-navigation/native'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 // import Swiper from 'react-native-swiper'
 import { BgCard } from '../BottomTabs/HomePages/Home'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -38,10 +40,16 @@ import { HrCommon } from '../Components/LineComponent'
 import { MainButton } from '../Components/ButtonComponents'
 import { useState } from 'react'
 import { CardMain } from '../Components/CardComponents'
-import { ViewBook, likeBook, saveBook } from '../../api/books'
+import { ViewBook, likeBook, saveBook, unlockChapter } from '../../api/books'
 import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const FullPreview = ({ navigation, route }) => {
-  const [data, setData] = useState({ chapters: [], tags: [], comments: [] })
+  const [data, setData] = useState({
+    chapters: [],
+    tags: [],
+    comments: [],
+    author: {},
+  })
   const [details, setDetails] = useState({
     id: null,
     open: false,
@@ -50,61 +58,117 @@ const FullPreview = ({ navigation, route }) => {
     coin: 0,
   })
 
-  React.useEffect(() => {
-    getBookData()
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      getBookData()
+    }, [])
+  )
 
   const getBookData = async () => {
     const data = await ViewBook(route.params.id)
+
     setData(data)
   }
 
   return (
     <ImageBackground source={main} style={styles.bgimage}>
-      <ScrollView scrollEnabled={true} pagingEnabled={true}>
+      <ScrollView scrollEnabled={true}>
         <SelectTab
+          key={'1'}
           tabItems={['Description', 'Parts']}
           makeCenter={true}
           topImages={[
             <HeadImage
-              title={data.bookName}
+              key={'1'}
+              title={data.bookName ?? route.params.title}
               read={data.totalReads}
-              image={{ uri: data.bookCoverImg }}
+              image={
+                data.bookCoverImg
+                  ? { uri: data.bookCoverImg }
+                  : route.params.image
+              }
               ratings={data.rating ?? 0}
-              parts={data.chapters.length}
+              parts={data.chapters?.length ?? 0}
               navigation={navigation}
+              genre={data.mainGenre ?? route.params.genre}
+              genre2={data.secondaryGenre ?? route.params.genre2}
+              publish={data.publishDate ?? route.params.date}
             />,
           ]}
         >
           <Description
+            key={'1'}
             author={data.bookAuthor}
             tagArr={data.tags}
             desc={data.description}
             reviews={data.comments}
+            bookId={data._id}
+            navigation={navigation}
+            img_author={data.author?.img}
+            works={data.author?.works}
+            followers={data.author?.followers}
+            bio={data.author?.bio}
           />
           <Parts
+            key={'1'}
             setDetails={(v) => setDetails(v)}
             data={data.chapters}
             navigation={navigation}
+            bookId={data._id}
           />
         </SelectTab>
       </ScrollView>
-      <Bottom id={data._id} liked={data.likedByUser} saved={data.saved} />
+      <Bottom
+        id={data._id}
+        liked={data.likedByUser}
+        saved={data.saved}
+        firstChapter={
+          data.chapters?.length ?? 0 > 0 ? data.chapters[0]._id : undefined
+        }
+        navigation={navigation}
+      />
       {details.open ? (
         <Unlock
+          id={details.id}
+          bookId={data._id}
           image={{ uri: data.bookCoverImg }}
           chapter={details.chapter}
           chapterName={details.chapterName}
           noOfCoin={details.coin}
           title={data.bookName}
-          onPressOut={() => setDetails({ ...details, open: false })}
+          setData={(v) => {
+            const d = { ...data }
+            d.chapters = d.chapters.map((obj) => {
+              if (obj._id === v) {
+                return { ...obj, unlockedByUser: true }
+              }
+              return obj
+            })
+            setDetails({
+              id: null,
+              open: false,
+              chapterName: '',
+              chapter: '',
+              coin: 0,
+            })
+            setData(d)
+          }}
+          onPressOut={() =>
+            setDetails({
+              id: null,
+              open: false,
+              chapterName: '',
+              chapter: '',
+              coin: 0,
+            })
+          }
         />
       ) : null}
     </ImageBackground>
   )
 }
 
-export const Bottom = ({ id, liked, saved }) => {
+export const Bottom = ({ navigation, id, liked, saved, firstChapter }) => {
   const [like, setLike] = useState(false)
   const [save, setSave] = useState(false)
   const [waitForLike, setWaitForLike] = useState(false)
@@ -130,6 +194,13 @@ export const Bottom = ({ id, liked, saved }) => {
       setSave(!save)
     }
     setWaitForSave(false)
+  }
+  const openBook = async () => {
+    console.log(firstChapter)
+    const data = await AsyncStorage.getItem(id)
+    if (data) navigation.navigate('BookRead', { bookId: id, id: data })
+    if (firstChapter)
+      navigation.navigate('BookRead', { bookId: id, id: firstChapter })
   }
   return (
     <View
@@ -178,6 +249,7 @@ export const Bottom = ({ id, liked, saved }) => {
           marginTop={0}
           marginBottom={0}
           txtStyle={{ fontSize: 18 }}
+          onPress={() => openBook()}
         />
       </View>
     </View>
@@ -200,7 +272,18 @@ export const generateStar = (i) => {
   return x.map((v) => v)
 }
 
-const Description = ({ author, tagArr, desc, reviews }) => {
+const Description = ({
+  navigation,
+  author,
+  tagArr,
+  desc,
+  reviews,
+  bookId,
+  img_author,
+  works,
+  followers,
+  bio,
+}) => {
   return (
     <ScrollView
       nestedScrollEnabled={true}
@@ -222,7 +305,10 @@ const Description = ({ author, tagArr, desc, reviews }) => {
       <CardMain>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity style={styles.authorIcon}>
-            <Image source={jenny} style={styles.authorIconImage} />
+            <Image
+              source={{ uri: img_author }}
+              style={styles.authorIconImage}
+            />
           </TouchableOpacity>
           <View>
             <Text
@@ -236,7 +322,9 @@ const Description = ({ author, tagArr, desc, reviews }) => {
               {author}
             </Text>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: 11, marginRight: 5 }}>15 works</Text>
+              <Text style={{ fontSize: 11, marginRight: 5 }}>
+                {works} works
+              </Text>
               <View
                 style={{
                   width: 0.5,
@@ -244,7 +332,7 @@ const Description = ({ author, tagArr, desc, reviews }) => {
                   marginRight: 5,
                 }}
               ></View>
-              <Text style={{ fontSize: 11 }}>Followers 9.6m</Text>
+              <Text style={{ fontSize: 11 }}>Followers {followers}</Text>
             </View>
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -260,18 +348,21 @@ const Description = ({ author, tagArr, desc, reviews }) => {
           </View>
         </View>
         <View>
-          <Text numberOfLines={4}>
-            Hi, I’m Dahyun. I’m a South Korean comic artist (manhwaga), former
-            model, and the creator of True Beauty, I like to draw, play video
-            games and eat cake. Thanks for reading my stuff!{' '}
-          </Text>
+          <Text numberOfLines={4}>{bio}</Text>
         </View>
       </CardMain>
       <CardMain>
         <View style={{ flexDirection: 'row' }}>
           <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Reviews</Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Comments', {
+                  bookId: bookId,
+                  type: 'books',
+                })
+              }
+            >
               <Text
                 style={{ color: '#FC5180', fontSize: 13, fontWeight: 'bold' }}
               >
@@ -316,6 +407,12 @@ const Description = ({ author, tagArr, desc, reviews }) => {
             paddingTop={7}
             paddingBottom={10}
             txtStyle={{ fontSize: 14 }}
+            onPress={() =>
+              navigation.navigate('Comments', {
+                bookId: bookId,
+                type: 'books',
+              })
+            }
           />
         </View>
       </CardMain>
@@ -376,7 +473,24 @@ export const UserReply = ({ image, user, message, star, heart }) => {
   return (
     <View style={{ flexDirection: 'row', marginVertical: 5 }}>
       <TouchableOpacity style={styles.authorIcon}>
-        <Image source={image} style={styles.authorIconImage} />
+        {image.uri ? (
+          <Image source={image} style={styles.authorIconImage} />
+        ) : (
+          <FontAwesome5
+            name="book-reader"
+            color={'#935ADC'}
+            size={30}
+            style={{
+              paddingLeft: 12,
+              paddingRight: 9,
+              paddingTop: 10,
+              paddingBottom: 7.5,
+              borderRadius: 100,
+              borderColor: '#FC5180',
+              borderWidth: 2,
+            }}
+          />
+        )}
       </TouchableOpacity>
       <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
         <Text
@@ -428,7 +542,17 @@ const Tags = ({ value }) => {
   )
 }
 
-const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
+const HeadImage = ({
+  image,
+  title,
+  read,
+  genre,
+  genre2,
+  publish,
+  parts,
+  ratings,
+  navigation,
+}) => {
   return (
     <View style={{ height: 400, width: windowWidth }}>
       <Image
@@ -512,7 +636,7 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
             }}
           >
             <Text style={{ color: 'white', marginRight: 6, fontSize: 12 }}>
-              Romance
+              {genre}
             </Text>
             <View
               style={{
@@ -533,7 +657,7 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
               />
             </View>
             <Text style={{ color: 'white', marginRight: 6, fontSize: 12 }}>
-              Romance
+              {genre2}
             </Text>
             <View
               style={{
@@ -553,7 +677,9 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
                 }}
               />
             </View>
-            <Text style={{ color: 'white', fontSize: 12 }}>Romance</Text>
+            <Text style={{ color: 'white', fontSize: 12 }}>
+              {new Date(publish).getFullYear()}
+            </Text>
           </View>
           <View
             style={{
@@ -571,7 +697,7 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
               <Text
                 style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}
               >
-                {ratings}
+                {ratings ? Number(ratings).toFixed(2) : 0}
               </Text>
               <Text style={{ color: 'white', fontSize: 10 }}>Ratings</Text>
             </View>
@@ -579,7 +705,7 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
               <Text
                 style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}
               >
-                {read}
+                {read ?? 0}
               </Text>
               <Text style={{ color: 'white', fontSize: 10 }}>Reads</Text>
             </View>
@@ -587,7 +713,7 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
               <Text
                 style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}
               >
-                {parts}
+                {parts ?? 0}
               </Text>
               <Text style={{ color: 'white', fontSize: 10 }}>Parts</Text>
             </View>
@@ -598,7 +724,8 @@ const HeadImage = ({ image, title, read, parts, ratings, navigation }) => {
   )
 }
 
-const Parts = ({ setDetails, navigation, data }) => {
+const Parts = ({ setDetails, navigation, data, bookId }) => {
+  const [oldest, setOldest] = useState(false)
   return (
     <ScrollView
       nestedScrollEnabled={true}
@@ -614,9 +741,10 @@ const Parts = ({ setDetails, navigation, data }) => {
               paddingHorizontal: 14,
               borderRadius: 20,
             }}
+            onPress={() => setOldest(!oldest)}
           >
             <Text style={{ color: 'white', fontSize: 12 }}>
-              Oldest to Newest
+              {oldest ? 'Newest to oldest' : 'Oldest to Newest'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -636,12 +764,28 @@ const Parts = ({ setDetails, navigation, data }) => {
       </View>
       {data?.map((d, i) => (
         <Chapter
-          key={i}
-          chapter={'Chapter ' + d.chapterNumber}
-          chapterName={d.chapterName}
+          id={oldest ? data[data.length - (i + 1)]._id : d._id}
+          key={oldest ? data[data.length - (i + 1)]._id : d._id}
+          bookId={bookId}
+          chapter={
+            'Chapter ' + oldest
+              ? data[data.length - (i + 1)].chapterNumber
+              : d.chapterNumber
+          }
+          chapterName={
+            oldest ? data[data.length - (i + 1)].chapterName : d.chapterName
+          }
           navigation={navigation}
-          coin={d.coinPrice}
-          locked={d.unlockedByUser ? false : d.coinPrice > 0}
+          coin={oldest ? data[data.length - (i + 1)].coinPrice : d.coinPrice}
+          locked={
+            oldest
+              ? data[data.length - (i + 1)].unlockedByUser
+                ? false
+                : data[data.length - (i + 1)].coinPrice > 0
+              : d.unlockedByUser
+              ? false
+              : d.coinPrice > 0
+          }
           onPress={(v) => (setDetails ? setDetails(v) : null)}
         />
       ))}
@@ -650,6 +794,8 @@ const Parts = ({ setDetails, navigation, data }) => {
 }
 
 const Chapter = ({
+  id,
+  bookId,
   chapter,
   chapterName,
   onPress,
@@ -662,8 +808,8 @@ const Chapter = ({
       onPress={() =>
         onPress
           ? locked
-            ? onPress({ open: true, coin, chapter, chapterName })
-            : navigation.navigate('BookRead')
+            ? onPress({ id, open: true, coin, chapter, chapterName })
+            : navigation.navigate('BookRead', { bookId, id })
           : null
       }
     >
@@ -686,13 +832,24 @@ const Chapter = ({
 
 export const Unlock = ({
   id,
+  bookId,
   image,
   title,
+  setData,
   chapter,
   chapterName,
   noOfCoin,
   onPressOut,
 }) => {
+  const [waitForUnlock, setWaitForUnlock] = useState(false)
+  const unlock = async () => {
+    setWaitForUnlock(true)
+    const check = await unlockChapter(bookId, id)
+    if (check && setData) {
+      setData(id)
+    }
+    setWaitForUnlock(false)
+  }
   return (
     <View
       style={{
@@ -788,7 +945,10 @@ export const Unlock = ({
               </View>
             </View>
           </View>
-          <TouchableOpacity style={{ marginTop: 10, flex: 1 }}>
+          <TouchableOpacity
+            style={{ marginTop: 10, flex: 1 }}
+            onPress={async () => (!waitForUnlock ? await unlock() : null)}
+          >
             <LinearGradient
               colors={['#FF749A', '#FF89A9', 'pink']}
               style={{

@@ -49,6 +49,7 @@ const Home = ({ navigation }) => {
         <Swiper height={'100%'}>
           {data.trending.map((d, i) => (
             <Image
+              resizeMode="cover"
               key={i}
               source={{ uri: d.bookCoverImg }}
               style={{ height: 180, width: '100%' }}
@@ -100,7 +101,19 @@ const Home = ({ navigation }) => {
               }}
             >
               {data.trending.map((d, i) => (
-                <TouchableOpacity key={i}>
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    navigation.navigate('FullPreview', {
+                      id: d._id,
+                      title: d.bookName,
+                      image: { uri: d.bookCoverImg },
+                      genre: d.mainGenre,
+                      genre2: d.secondaryGenre,
+                      date: d.publishDate,
+                    })
+                  }
+                >
                   <Image
                     key={i}
                     source={{ uri: d.bookCoverImg }}
@@ -167,7 +180,19 @@ const Home = ({ navigation }) => {
             </View>
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
               {data.completed.map((d, i) => (
-                <TouchableOpacity key={i}>
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    navigation.navigate('FullPreview', {
+                      id: d._id,
+                      title: d.bookName,
+                      image: { uri: d.bookCoverImg },
+                      genre: d.mainGenre,
+                      genre2: d.secondaryGenre,
+                      date: d.publishDate,
+                    })
+                  }
+                >
                   <Image
                     source={{ uri: d.bookCoverImg }}
                     style={{
@@ -187,7 +212,19 @@ const Home = ({ navigation }) => {
             </View>
             <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
               {data.updated.map((d, i) => (
-                <TouchableOpacity key={i}>
+                <TouchableOpacity
+                  key={i}
+                  onPress={() =>
+                    navigation.navigate('FullPreview', {
+                      id: d._id,
+                      title: d.bookName,
+                      image: { uri: d.bookCoverImg },
+                      genre: d.mainGenre,
+                      genre2: d.secondaryGenre,
+                      date: d.publishDate,
+                    })
+                  }
+                >
                   <Image
                     source={{ uri: d.bookCoverImg }}
                     style={{
@@ -377,6 +414,16 @@ const Home = ({ navigation }) => {
                           paddingVertical: 3,
                           paddingTop: 6,
                         }}
+                        onPress={() =>
+                          navigation.navigate('FullPreview', {
+                            id: d._id,
+                            title: d.bookName,
+                            image: { uri: d.bookCoverImg },
+                            genre: d.mainGenre,
+                            genre2: d.secondaryGenre,
+                            date: d.publishDate,
+                          })
+                        }
                         txtStyle={{ fontSize: 14 }}
                       />
                     </View>

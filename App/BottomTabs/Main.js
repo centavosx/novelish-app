@@ -9,7 +9,7 @@ import { main } from '../../images'
 const Tab = createBottomTabNavigator()
 import HomeTab from './HomeTab'
 import LibraryTab from './LibraryTab'
-const Main = () => {
+const Main = ({ setLogin }) => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -19,6 +19,9 @@ const Main = () => {
           elevation: 0,
         },
         tabBarActiveTintColor: 'black',
+        tabBarOptions: {
+          showLabel: false,
+        },
       }}
     >
       <Tab.Screen
@@ -75,7 +78,7 @@ const Main = () => {
           },
         }}
       >
-        {(props) => <ProfileTab {...props} />}
+        {(props) => <ProfileTab {...props} logout={(v) => setLogin(v)} />}
       </Tab.Screen>
     </Tab.Navigator>
   )

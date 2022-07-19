@@ -3,79 +3,45 @@ import { URL } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Alert } from 'react-native'
 
-export const loginUser = async (email, pass) => {
-  try {
-    const resp = await axios.get(URL + `users/login/${pass}`, {
-      params: {
-        email,
-      },
-    })
-    if (resp.data.message) Alert.alert(null, resp.data.message)
-    if (resp.data.rtkn) await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
-    await AsyncStorage.setItem('ACCESS', resp.data.tkn)
-    return resp.data.loggedin
-  } catch (e) {
-    if (e.response.data.message && e.response.status !== 500)
-      Alert.alert(null, e.response.data.message)
-    return null
-  }
-}
-
-export const registerUser = async (name, username, email, password) => {
-  try {
-    const resp = await axios.post(URL + 'users', {
-      name,
-      username,
-      email,
-      password,
-    })
-    if (resp.data.message) Alert.alert(null, resp.data.message)
-    return resp.data.registered ? true : false
-  } catch (e) {
-    if (e.response.data.message && e.response.status !== 500)
-      Alert.alert(null, e.response.data.message)
-    return false
-  }
-}
-
-export const getLibraries = async () => {
+export const getCoins = async () => {
   try {
     const ACCESS_TOKEN = await AsyncStorage.getItem('ACCESS')
     const REFRESH_TOKEN = await AsyncStorage.getItem('REFRESH')
 
     if (ACCESS_TOKEN === null || REFRESH_TOKEN === null) return false
 
-    const resp = await axios.get(URL + `users/library`, {
+    const resp = await axios.get(URL + 'transactions/coins', {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
         tkn: REFRESH_TOKEN,
       },
     })
-    if (resp.data.message) Alert.alert(null, resp.data.message)
+
     if (resp.data.rtkn) await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
     if (resp.data.tkn) await AsyncStorage.setItem('ACCESS', resp.data.tkn)
-    return resp.data?.book ?? []
+    let newData = { ...resp.data }
+    delete newData.tkn
+    delete newData.rtkn
+    return resp.data ? newData : { coins: [] }
   } catch (e) {
     if (e.response.data.message && e.response.status !== 500)
       Alert.alert(null, e.response.data.message)
     const ACCESS_TOKEN = e.response.data.tkn
     const REFRESH_TOKEN = e.response.data.rtkn
-
     if (REFRESH_TOKEN) await AsyncStorage.setItem('REFRESH', REFRESH_TOKEN)
     if (ACCESS_TOKEN) await AsyncStorage.setItem('ACCESS', ACCESS_TOKEN)
-    return []
+    return { coins: [] }
   }
 }
-export const removeBooks = async (data = []) => {
+
+export const addCoin = async (name) => {
   try {
     const ACCESS_TOKEN = await AsyncStorage.getItem('ACCESS')
     const REFRESH_TOKEN = await AsyncStorage.getItem('REFRESH')
-
     if (ACCESS_TOKEN === null || REFRESH_TOKEN === null) return false
-
-    const resp = await axios.patch(
-      URL + `users/library`,
-      { data },
+    const resp = await axios.post(
+      URL + 'transactions/pay',
+      { name },
       {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -83,10 +49,9 @@ export const removeBooks = async (data = []) => {
         },
       }
     )
-    if (resp.data.message) Alert.alert(null, resp.data.message)
     if (resp.data.rtkn) await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
     if (resp.data.tkn) await AsyncStorage.setItem('ACCESS', resp.data.tkn)
-    return resp.data.removed ?? false
+    return resp.data.url ?? null
   } catch (e) {
     if (e.response.data.message && e.response.status !== 500)
       Alert.alert(null, e.response.data.message)
@@ -94,27 +59,30 @@ export const removeBooks = async (data = []) => {
     const REFRESH_TOKEN = e.response.data.rtkn
     if (REFRESH_TOKEN) await AsyncStorage.setItem('REFRESH', REFRESH_TOKEN)
     if (ACCESS_TOKEN) await AsyncStorage.setItem('ACCESS', ACCESS_TOKEN)
-    return false
+    return null
   }
 }
 
-export const getProfile = async () => {
+export const getTransactions = async (start, end) => {
   try {
     const ACCESS_TOKEN = await AsyncStorage.getItem('ACCESS')
     const REFRESH_TOKEN = await AsyncStorage.getItem('REFRESH')
 
     if (ACCESS_TOKEN === null || REFRESH_TOKEN === null) return false
 
-    const resp = await axios.get(URL + `users/profile`, {
+    const resp = await axios.get(URL + `transactions/${start}/${end}`, {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
         tkn: REFRESH_TOKEN,
       },
     })
-    if (resp.data.message) Alert.alert(null, resp.data.message)
+
     if (resp.data.rtkn) await AsyncStorage.setItem('REFRESH', resp.data.rtkn)
     if (resp.data.tkn) await AsyncStorage.setItem('ACCESS', resp.data.tkn)
-    return resp.data.data ?? {}
+    let newData = { ...resp.data }
+    delete newData.tkn
+    delete newData.rtkn
+    return resp.data ? newData : { trans: [] }
   } catch (e) {
     if (e.response.data.message && e.response.status !== 500)
       Alert.alert(null, e.response.data.message)
@@ -122,6 +90,6 @@ export const getProfile = async () => {
     const REFRESH_TOKEN = e.response.data.rtkn
     if (REFRESH_TOKEN) await AsyncStorage.setItem('REFRESH', REFRESH_TOKEN)
     if (ACCESS_TOKEN) await AsyncStorage.setItem('ACCESS', ACCESS_TOKEN)
-    return {}
+    return { trans: [] }
   }
 }

@@ -44,9 +44,10 @@ const Ranking = ({ navigation }) => {
   const [popular, setPopularImage] = useState('')
   const [updated, setUpdatedImage] = useState('')
   const [chapters, setChaptersImage] = useState('')
+
   return (
     <ImageBackground source={main} style={[styles.bgimage]}>
-      <ScrollView>
+      <View style={{ flex: 1 }}>
         <SelectTab
           tabItems={['All', 'Popular', 'Latest', 'Chapters']}
           makeCenter={true}
@@ -88,7 +89,7 @@ const Ranking = ({ navigation }) => {
         >
           
         </Swiper> */}
-      </ScrollView>
+      </View>
     </ImageBackground>
   )
 }
@@ -104,6 +105,9 @@ const Books = ({
   noOfParts,
   description,
   navigation,
+  genre,
+  genre2,
+  date,
   api,
 }) => {
   return (
@@ -114,6 +118,11 @@ const Books = ({
         navigation
           ? navigation.navigate('FullPreview', {
               id,
+              title,
+              image,
+              genre,
+              genre2,
+              date,
             })
           : null
       }
@@ -192,12 +201,12 @@ const Pages = ({ image, navigation, api }) => {
     getData()
   }, [])
   const getData = async () => {
-    const data = await await api(0, 20)
+    const data = await api(0, 20)
     image(data.length > 0 ? data[0].bookCoverImg : null)
     setData(data)
   }
   return (
-    <View>
+    <ScrollView style={{ flex: 1, marginBottom: 190 }}>
       {data.length > 0 ? (
         data.map((d, i) => (
           <Books
@@ -212,6 +221,9 @@ const Pages = ({ image, navigation, api }) => {
             noOfParts={d.chapterNumber}
             author={d.bookAuthor}
             description={d.description}
+            genre={d.mainGenre}
+            genre2={d.secondaryGenre}
+            date={d.publishDate}
           />
         ))
       ) : (
@@ -224,13 +236,13 @@ const Pages = ({ image, navigation, api }) => {
           }}
         />
       )}
-    </View>
+    </ScrollView>
   )
 }
 
 const HeadImage = ({ image, name }) => {
   return (
-    <View style={{ height: 300, width: windowWidth }}>
+    <View style={{ height: 150, width: windowWidth }}>
       <Image
         source={image}
         style={{ position: 'absolute', height: '100%', width: '100%' }}
@@ -256,35 +268,46 @@ const HeadImage = ({ image, name }) => {
       />
       <View
         style={{
-          flexDirection: 'row',
+          height: 120,
+          width: '100%',
           justifyContent: 'center',
-          height: '100%',
+          alignContent: 'center',
           alignItems: 'center',
+          alignSelf: 'center',
         }}
       >
-        <Image source={leftLeaf} style={{ height: 72, width: 42 }} />
         <View
           style={{
-            marginLeft: 10,
-            marginRight: 10,
-            backgroundColor: 'transparent',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            flex: 1,
+            alignItems: 'center',
           }}
         >
-          <Text
+          <Image source={leftLeaf} style={{ height: 72, width: 42 }} />
+          <View
             style={{
-              color: 'white',
-              fontSize: 18,
-              fontWeight: 'bold',
-              textAlign: 'center',
+              marginLeft: 10,
+              marginRight: 10,
+              backgroundColor: 'transparent',
             }}
           >
-            RANKING
-          </Text>
-          <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>
-            {name}
-          </Text>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 18,
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}
+            >
+              RANKING
+            </Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>
+              {name}
+            </Text>
+          </View>
+          <Image source={rightLeaf} style={{ height: 72, width: 42 }} />
         </View>
-        <Image source={rightLeaf} style={{ height: 72, width: 42 }} />
       </View>
     </View>
   )

@@ -73,6 +73,9 @@ const LibraryTab = ({ navigation }) => {
                 key={d._id}
                 bookName={d.bookName}
                 id={d._id}
+                mainGenre={d.mainGenre}
+                secondaryGenre={d.secondaryGenre}
+                publishDate={d.publishDate}
                 edit={edit}
                 selected={selected.includes(d._id)}
                 navigation={navigation}
@@ -121,7 +124,18 @@ const LibraryTab = ({ navigation }) => {
   )
 }
 
-const Book = ({ id, image, bookName, onPress, edit, selected, navigation }) => {
+const Book = ({
+  id,
+  image,
+  bookName,
+  onPress,
+  edit,
+  selected,
+  navigation,
+  mainGenre,
+  secondaryGenre,
+  publishDate,
+}) => {
   return (
     <View style={{ width: '30%', margin: 5 }}>
       <TouchableOpacity
@@ -131,6 +145,11 @@ const Book = ({ id, image, bookName, onPress, edit, selected, navigation }) => {
             ? navigation
               ? navigation.navigate('FullPreview', {
                   id,
+                  title: bookName,
+                  image,
+                  genre: mainGenre,
+                  genre2: secondaryGenre,
+                  date: publishDate,
                 })
               : null
             : null

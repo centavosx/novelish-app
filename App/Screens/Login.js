@@ -117,6 +117,7 @@ const Login = ({ navigation, login }) => {
                   paddingEnd: 18,
                   top: -2,
                 }}
+                secureTextEntry={true}
                 editable={true}
                 onChangeText={(v) => setPassword(v)}
               />
